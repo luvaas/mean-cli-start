@@ -1,14 +1,14 @@
-import { LuvaasPage } from './app.po';
+import { MeanStartPage } from './app.po';
 
 describe('luvaas App', function() {
-  let page: LuvaasPage;
+	let page: MeanStartPage;
 
-  beforeEach(() => {
-    page = new LuvaasPage();
-  });
+	beforeEach(() => {
+		page = new MeanStartPage();
+	});
 
-  it('should display message saying app works', () => {
-    page.navigateTo();
-    expect(page.getParagraphText()).toEqual('app works!');
-  });
+	it('should display message saying app works', () => {
+		page.navigateTo();
+		expect(page.getParagraphText()).toEqual('app works!');
+	});
 });
