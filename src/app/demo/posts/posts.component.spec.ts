@@ -25,7 +25,7 @@ describe('PostsComponent', () => {
 			declarations: [PostsComponent],
 			providers: [{ provide: PostsService, useClass: FakePostsService }]
 		})
-			.compileComponents();
+		.compileComponents();
 	}));
 
 	beforeEach(() => {

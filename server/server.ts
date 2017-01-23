@@ -12,20 +12,6 @@ app.set('port', port);
 // Create server and listen on provided port (on all network interfaces).
 const server = http.createServer(app);
 
-// socket.io
-const sioModules = require('require-all')({
-	dirname: __dirname + '/socket.io',
-	filter: /^([^\.].*)\.(ts|js)$/
-});
-for (let name of Object.keys(sioModules)) {
-	const exported = sioModules[name].default;
-	if (exported && exported.constructor.name === 'Server') {
-		console.log(`Add socket.io server ${name}`);
-		const sioServer = exported as SocketIO.Server;
-		sioServer.attach(server);
-	}
-}
-
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
