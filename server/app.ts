@@ -10,11 +10,11 @@ import * as mongoose from 'mongoose';
 
 const app: express.Express = express();
 
-// // view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
+// View engine setup (This is only ever used for displaying error pages)
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
-// uncomment after placing your favicon in /public
+// TODO: Uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -25,7 +25,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/', index);
 // app.use('/users', users);
 
-// Express routes
+// Create Express routes using all files in the routes directory
+console.log('\nCreate express routes...');
 const routeModules = require('require-all')({
 	dirname: __dirname + '/routes',
 	filter: /^([^\.].*)\.(ts|js)$/,
@@ -55,40 +56,37 @@ app.use((req, res) => {
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
-  var err = new Error('Not Found');
-  err['status'] = 404;
-  next(err);
+	var err = new Error('Not Found');
+	err['status'] = 404;
+	next(err);
 });
 
 // Error handlers
 
 // Development error handler will print stacktrace
 if (app.get('env') === 'development') {
-
-  app.use((error: any, req, res, next) => {
-    res.status(error['status'] || 500);
-    res.render('error', {
-      message: error.message,
-      error
-    });
-  });
+	app.use((error: any, req, res, next) => {
+		res.status(500).send({
+			message: error.message,
+			error
+		});
+	});
 }
 
 // Production error handler (no stacktraces leaked to user)
 app.use((error: any, req, res, next) => {
-  res.status(error['status'] || 500);
-  res.render('error', {
-    message: error.message,
-    error: {}
-  });
-  return null;
+	res.status(500).send({
+		message: error.message,
+		error:{}
+	});
+	return null;
 });
 
 export default app;
 
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://localhost/luvaas');
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {

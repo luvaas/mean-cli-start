@@ -67,7 +67,7 @@ export default testRouter;
 ```
 
 All the API modules must have a default export of type `express.Router`.
-They will be imported by `app.ts` and be added to the `express` app automatically.
+All routes will be imported by `app.ts` and be added to the `express` app automatically.
 The root of the Routers correspond to the sub directories starting from `api/`, so the path of above API is `/api/demo/test`.
 
 >TODO: Role-based access control required.

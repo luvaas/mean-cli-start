@@ -1,0 +1,15 @@
+[x] link to DB
+[ ] create access control and limit access to /admin section (this can be done angular side)
+[ ] create access control to APIs
+[ ] delete HeroFormComponent
+[ ] delete posts module
+[ ] delete demo folder
+[ ] create admin section
+[ ] create admin/user user management page to create and edit users
+[ ] create admin/portfolio page to create and edit portfolio contents
+[ ] create admin/resume page to create and edit resume contents
+[ ] figure out how to do email sends from AWS and node.js
+[ ] design site
+[ ] add content via admin section
+[ ] use phantomjs to generate a pdf of resume.  This should be created automatically whenever resume content is modified via the admin/resume section
+[ ] add favicon

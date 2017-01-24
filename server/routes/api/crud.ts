@@ -1,3 +1,5 @@
+// CRUD: Simple Create, Read, Update, Delete api operations for data management
+
 import { Router } from 'express';
 
 const crudRouter = Router();
@@ -8,11 +10,11 @@ const models = require('require-all')({
 });
 
 Object.keys(models).forEach((name) => {
-	console.log(`Add REST ${name}`);
+	console.log(`REST routes added for ${name}`);
 	const model = models[name].default;
 
 	crudRouter.route('/' + name + 's')
-		// C
+		// C(reate)
 		.post((req, res) => {
 			var m = new model();
 			Object.assign(m, req.body);
@@ -24,7 +26,7 @@ Object.keys(models).forEach((name) => {
 				}
 			});
 		})
-		// R
+		// R(ead) all documents from model
 		.get((req, res) => {
 			model.find((err, ms) => {
 				if (err) {
@@ -36,7 +38,7 @@ Object.keys(models).forEach((name) => {
 		});
 
 	crudRouter.route('/' + name + 's/:_id')
-		// R
+		// R(ead) a single document from model by matching ID
 		.get((req, res) => {
 			model.findById(req.params._id, (err, m) => {
 				if (err) {
@@ -46,7 +48,7 @@ Object.keys(models).forEach((name) => {
 				}
 			});
 		})
-		// U
+		// U(pdate) a single document by id using req.body
 		.put((req, res) => {
 			model.findById(req.params._id, (err, m) => {
 				if (err) {
@@ -63,7 +65,7 @@ Object.keys(models).forEach((name) => {
 				});
 			});
 		})
-		// D
+		// D(elete) a single document by id
 		.delete((req, res) => {
 			model.remove({
 				_id: req.params._id
