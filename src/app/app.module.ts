@@ -3,9 +3,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+// Main app component
 import { AppComponent } from './app.component';
 
 // Home page
@@ -16,31 +16,23 @@ import { MenuService } from './home/menu.service';
 import { PostsComponent } from './demo/posts/posts.component';
 import { PostsService } from './demo/posts/posts.service';
 
-// Admin/users
-import { UsersComponent } from './admin/users/users.component';
-import { UsersService } from './admin/users/users.service';
+// Admin section (it has its own child routes and imports)
+import { AdminModule } from './admin/admin.module';
+
+// Misc
+import { LoginComponent } from './login/login.component';
 
 // Delete this:
 import { HeroFormComponent } from './demo/form/hero-form.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const ROUTES = [
-	{
-		path: '',
-		component: HomeComponent
-	},
-	{
-		path: 'posts',
-		component: PostsComponent
-	},
-	{
-		path: 'form',
-		component: HeroFormComponent
-	},
-	// Admin section
-	{
-		path: 'admin/users',
-		component: UsersComponent
-	}
+	{ path: '', component: HomeComponent },
+	{ path: 'posts', component: PostsComponent },
+	{ path: 'form', component: HeroFormComponent },
+	{ path: 'login', component: LoginComponent },
+	// 404
+	{ path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
@@ -49,19 +41,20 @@ const ROUTES = [
 		HomeComponent,
 		PostsComponent,
 		HeroFormComponent,
-		UsersComponent
+		PageNotFoundComponent,
+		LoginComponent
 	],
 	imports: [
 		BrowserModule,
 		FormsModule,
 		HttpModule,
+		AdminModule,
 		RouterModule.forRoot(ROUTES),
 		NgbModule.forRoot()
 	],
 	providers: [
 		MenuService,
-		PostsService,
-		UsersService
+		PostsService
 	],
 	bootstrap: [AppComponent]
 })

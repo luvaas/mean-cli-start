@@ -1,0 +1,11 @@
+<p>
+	Welcome to the admin section
+</p>
+<nav>
+	<a routerLink="./" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+	<a routerLink="./users" routerLinkActive="active">Manage Users</a>
+	<a routerLink="./resume" routerLinkActive="active">Manage Resume</a>
+	<a routerLink="./portfolio" routerLinkActive="active">Manage Portfolio</a>
+</nav>
+
+<router-outlet></router-outlet>
