@@ -1,14 +1,14 @@
 [
 	{
-		"title": "Demo",
+		"title": "Admin",
 		"sub": [
 			{
-				"title": "REST",
-				"link": "posts"
+				"title": "Dashboard",
+				"link": "admin/"
 			},
 			{
-				"title": "Form",
-				"link": "form"
+				"title": "Users",
+				"link": "admin/users"
 			}
 		]
 	}

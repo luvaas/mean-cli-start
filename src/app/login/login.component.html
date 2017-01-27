@@ -1,9 +1,9 @@
 <div class="col-md-6 col-md-offset-3">
-	<h2>Login</h2>
-	{{message}}
+	<h2>Login <span class="small">(status: {{message}})</span></h2>
+
 	<form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
 		<div class="form-group" [ngClass]="{ 'has-error': f.submitted && !email.valid }">
-			<label for="email">email</label>
+			<label for="email">Email</label>
 			<input type="text" class="form-control" name="email" [(ngModel)]="model.email" #email="ngModel" required />
 			<div *ngIf="f.submitted && !email.valid" class="help-block">Email is required</div>
 		</div>
