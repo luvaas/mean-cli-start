@@ -4,6 +4,7 @@ import * as cookieParser from 'cookie-parser';
 import * as path from 'path';
 import * as logger from 'morgan';
 import * as mongoose from 'mongoose';
+import * as Q  from 'q';
 
 // import index from './routes/index';
 // import users from './routes/users';
@@ -56,7 +57,7 @@ app.use((req, res) => {
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
-	var err = new Error('Not Found');
+	let err = new Error('Not Found');
 	err['status'] = 404;
 	next(err);
 });
@@ -77,17 +78,20 @@ if (app.get('env') === 'development') {
 app.use((error: any, req, res, next) => {
 	res.status(500).send({
 		message: error.message,
-		error:{}
+		error: {}
 	});
 	return null;
 });
 
 export default app;
 
+// Set up mongoose to use promises via the Q library
+(<any>mongoose).Promise = Q.Promise;
+
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost/luvaas');
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
-	console.log('MongoDB connected')
+	console.log('MongoDB connected');
 });

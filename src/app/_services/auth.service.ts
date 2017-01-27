@@ -4,31 +4,21 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AuthService {
 
-	isLoggedIn: boolean = false; // Updated elsewhere but stored here for easy reference
-	returnUrl: string; // Store the URL so we can redirect after logging in
+	isLoggedIn : boolean = false; // Updated elsewhere but stored here for easy reference
+	returnUrl : string; // Store the URL so we can redirect after logging in
 
 	constructor(private http: Http) { }
 
 	login(email: string, password: string) {
 		return this.http.post('/api/authenticate', { email: email, password: password })
 			.map((response: Response) => {
-				// Login successful if there's a jwt token in the response
-				console.log('response:', response);
 				let results = response.json();
-				let user = results.user;
-
-				console.log('user:', user);
-
-				if (user && user.token) {
-					// Store user details and jwt token in local storage to keep user logged in between page refreshes
-					localStorage.setItem('currentUser', JSON.stringify(user));
-					this.isLoggedIn = true;
-				}
+				return results;
 			});
 	}
 

@@ -2,28 +2,40 @@ import { Router } from 'express';
 
 const authRouter = Router();
 
-// router.route('/authenticate')
-// 	.post((req, res) => {
-// 		console.log('hit authentication route');
-// 		console.log('req:', req););
-// 		res.json({ test: 'hello' });
-// 	})
-
 authRouter.route('/authenticate').post((req, res) => {
-	console.log('hit authentication route');
-	console.log('req.body:', req.body);
+	const Model = require('../../models/user').default;
 
-	var user:any = {
-		name : 'Darren',
-		email: 'darren@luvaas.com',
-		token: 'test'
-	}
-
-	var results:any = {
-		user : user
+	let results: any = {
+		errors 	: [],
+		info 	: '',
+		user 	: {},
+		success : false
 	};
 
-	res.json(results);
-})
+	Model.findOne({email: req.body.email, password: req.body.password}).exec()
+		.then((user) => {
+			if (!user) {
+				results.info = 'No user found with matching criteria.';
+				results.success = false;
+			}
+			else {
+				results.info = 'User found successfully';
+				results.success = true;
+				user = user.toObject ? user.toObject() : user;
+				user.token = 'hello world'; // TODO: Add a real token here
+				results.user = user;
+			}
+
+			return res.json(results);
+		})
+		.catch((err) => {
+			let error = 'Error during find user. Err: ' + err;
+			results.errors.push(err);
+			results.info = error;
+			results.success = false;
+
+			return res.json(results);
+		});
+});
 
 export default authRouter;

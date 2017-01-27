@@ -16,7 +16,7 @@ Object.keys(models).forEach((name) => {
 	crudRouter.route('/' + name + 's')
 		// C(reate)
 		.post((req, res) => {
-			var m = new model();
+			let m = new model();
 			Object.assign(m, req.body);
 			m.save((err) => {
 				if (err) {

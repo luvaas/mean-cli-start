@@ -12,10 +12,10 @@ import { MessageService } from '../_services/message.service';
 	styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-	message: string = '';
-	model: any = {};
+	message : string = '';
+	model : any = {};
 	loading = false;
-	returnUrl: string;
+	returnUrl : string;
 
 	constructor( private route: ActivatedRoute, private router: Router, private authService: AuthService, private messageService: MessageService ) { }
 
@@ -28,10 +28,27 @@ export class LoginComponent implements OnInit {
 		this.loading = true;
 		this.authService.login(this.model.email, this.model.password)
 			.subscribe(
-				data => {
+				results => {
 					this.loading = false;
+
+					let user = results.user;
+
+					console.log('results:', results);
+					console.log('user:', user);
+
+					if (user && user.token) {
+						// Store user details and jwt token in local storage to keep user logged in between page refreshes
+						localStorage.setItem('currentUser', JSON.stringify(user));
+						this.authService.isLoggedIn = true;
+						console.log('this.returnUrl:' + this.returnUrl);
+						this.router.navigate([this.returnUrl]);
+					}
+					else {
+						this.authService.isLoggedIn = false;
+						this.messageService.error('Invalid email or password.');
+					}
+
 					this.setMessage();
-					this.router.navigate([this.returnUrl]);
 				},
 				error => {
 					this.loading = false;
@@ -45,11 +62,11 @@ export class LoginComponent implements OnInit {
 		console.log('logging out');
 		this.authService.logout();
 		this.setMessage();
-		if(next) next();
+		if (next) { next(); }
 	}
 
 	ngOnInit() {
-		var self = this;
+		let self = this;
 
 		this.logout(function() {
 			// Get return url from route parameters or authService or default to '/'
