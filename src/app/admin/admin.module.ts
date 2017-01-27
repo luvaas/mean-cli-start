@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin.component';
 import { AdminHomeComponent } from './admin-home/admin-home.component';
 import { ManageUsersComponent } from './manage-users/manage-users.component';
-import { UsersService } from '../_services/users.service';
+import { UserService } from '../_services/user.service';
 
 // Authentication (Using simple authentication via JWT and not anything fancy like OAuth2)
 import { AuthService } from '../_services/auth.service';
@@ -44,7 +44,7 @@ const adminRoutes: Routes = [
 		ManageUsersComponent
 	],
 	providers: [
-		UsersService,
+		UserService,
 		AuthGuard,
 		AuthService
 	]

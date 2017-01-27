@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { tokenNotExpired } from 'angular2-jwt';
 import { AuthService } from '../_services/auth.service';
 
 @Injectable()
@@ -13,6 +12,15 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 		let url: string = state.url;
 
 		return this.checkLogin(url);
+
+		// if (localStorage.getItem('currentUser')) {
+  //           // logged in so return true
+  //           return true;
+  //       }
+
+  //       // not logged in so redirect to login page with the return url
+  //       this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
+  //       return false;
 	}
 
 	canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
@@ -23,11 +31,13 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 		if (this.authService.isLoggedIn) { return true; }
 
 		// Store the attempted URL for redirecting
-		this.authService.redirectUrl = url;
+		this.authService.returnUrl = url;
 
 		// Navigate to the login page with extras
 		this.router.navigate(['/login']);
 		return false;
 	}
+
+
 }
 

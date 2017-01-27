@@ -12,24 +12,17 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { MenuService } from './home/menu.service';
 
-// Posts
-import { PostsComponent } from './demo/posts/posts.component';
-import { PostsService } from './demo/posts/posts.service';
-
 // Admin section (it has its own child routes and imports)
 import { AdminModule } from './admin/admin.module';
 
 // Misc
 import { LoginComponent } from './login/login.component';
-
-// Delete this:
-import { HeroFormComponent } from './demo/form/hero-form.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { MessageComponent } from './_directives/message/message.component';
+import { MessageService } from './_services/message.service';
 
 const ROUTES = [
 	{ path: '', component: HomeComponent },
-	{ path: 'posts', component: PostsComponent },
-	{ path: 'form', component: HeroFormComponent },
 	{ path: 'login', component: LoginComponent },
 	// 404
 	{ path: '**', component: PageNotFoundComponent }
@@ -39,10 +32,9 @@ const ROUTES = [
 	declarations: [
 		AppComponent,
 		HomeComponent,
-		PostsComponent,
-		HeroFormComponent,
 		PageNotFoundComponent,
-		LoginComponent
+		LoginComponent,
+		MessageComponent
 	],
 	imports: [
 		BrowserModule,
@@ -54,7 +46,7 @@ const ROUTES = [
 	],
 	providers: [
 		MenuService,
-		PostsService
+		MessageService,
 	],
 	bootstrap: [AppComponent]
 })

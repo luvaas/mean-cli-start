@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthHttp } from 'angular2-jwt';
 import { Http } from '@angular/http';
 import { Router } from '@angular/router';
-import { UsersService } from '../../_services/users.service';
+import { UserService } from '../../_services/user.service';
+import { User } from '../../_models/user';
 
 @Component({
 	selector: 'app-users',
@@ -11,37 +11,37 @@ import { UsersService } from '../../_services/users.service';
 })
 export class ManageUsersComponent implements OnInit {
 	// instantiate users to an empty array
-	users: any = [];
 	error: string;
 	jwt: string;
-	//decodedJwt: string;
-	response: string;
-	api: string;
 
-	constructor(private usersService: UsersService, public router: Router, public http: Http) {
-		this.jwt = localStorage.getItem('id_token');
-		//this.decodedJwt = this.jwt && window.jwt_decode(this.jwt);
-	}
+    currentUser: User;
+    users: User[] = [];
+
+    constructor(private userService: UserService) {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    }
 
 	onSubmit() {
 
 	}
 
-	getUsers() {
-		// Retrieve users from the API
-		this.usersService.getAllUsers().subscribe(
-			users => this.users = users
-		);
-	}
-
 	addUser(user) {
-		this.usersService.addUser(user).subscribe(
+		this.userService.create(user).subscribe(
 			user => this.users.push(user)
 		);
 	}
 
-	ngOnInit() {
-		this.getUsers();
-	}
+    deleteUser(id: number) {
+        this.userService.delete(id).subscribe(() => { this.getAllUsers() });
+    }
 
+    private getAllUsers() {
+        this.userService.getAll().subscribe(users => { this.users = users; });
+    }
+
+	ngOnInit() {
+        this.getAllUsers();
+
+	}
 }
+

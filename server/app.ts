@@ -84,7 +84,6 @@ app.use((error: any, req, res, next) => {
 
 export default app;
 
-
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost/luvaas');
 const db = mongoose.connection;

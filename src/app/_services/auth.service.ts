@@ -1,23 +1,40 @@
+// The authentication service is used to login and logout of the application, to login it posts the users credentials to the api and checks the response for a JWT token, if there is one it means authentication was successful so the user details including the token are added to local storage.
+// The logged in user details are stored in local storage so the user will stay logged in if they refresh the browser and also between browser sessions until they logout. If you don't want the user to stay logged in between refreshes or sessions the behaviour could easily be changed by storing user details somewhere less persistent such as session storage or in a property of the authentication service.
+
 import { Injectable } from '@angular/core';
-import { tokenNotExpired } from 'angular2-jwt';
+import { Http, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/map'
 
 @Injectable()
 export class AuthService {
-	isLoggedIn: boolean = false;
-	redirectUrl: string; // Store the URL so we can redirect after logging in
 
-	login(): Observable<boolean> {
-		return Observable
-			.of(true)
-			.delay(1000)
-			.do(val => this.isLoggedIn = true);
+	isLoggedIn: boolean = false; // Updated elsewhere but stored here for easy reference
+	returnUrl: string; // Store the URL so we can redirect after logging in
+
+	constructor(private http: Http) { }
+
+	login(email: string, password: string) {
+		return this.http.post('/api/authenticate', { email: email, password: password })
+			.map((response: Response) => {
+				// Login successful if there's a jwt token in the response
+				console.log('response:', response);
+				let results = response.json();
+				let user = results.user;
+
+				console.log('user:', user);
+
+				if (user && user.token) {
+					// Store user details and jwt token in local storage to keep user logged in between page refreshes
+					localStorage.setItem('currentUser', JSON.stringify(user));
+					this.isLoggedIn = true;
+				}
+			});
 	}
 
-	logout(): void {
+	logout() {
+		// Remove user from local storage to log user out
+		localStorage.removeItem('currentUser');
 		this.isLoggedIn = false;
 	}
 }
