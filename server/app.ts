@@ -82,9 +82,11 @@ app.use((error: any, req, res, next) => {
 	return null;
 });
 
-
 // Set up mongoose to use promises via the Q library
 (<any>mongoose).Promise = Q.Promise;
+
+// Set up the API secret
+app.set('superSecret', config.secret);
 
 // Connect to MongoDB
 mongoose.connect(config.db);
