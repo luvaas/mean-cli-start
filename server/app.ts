@@ -5,14 +5,13 @@ import * as path from 'path';
 import * as mongoose from 'mongoose';
 import * as Q from 'q';
 import log from './helpers/bunyan';
+import config from './helpers/config';
 
 const app: express.Express = express();
+
+// Get environment
 const env = require('get-env')();
 log.info('Environment = ' + env);
-
-// Load config file
-let config: any = require('./config/config.' + env);
-app.set('config', config);
 
 // View engine setup (This is only ever used for displaying error pages)
 // app.set('views', path.join(__dirname, 'views'));

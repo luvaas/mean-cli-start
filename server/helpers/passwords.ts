@@ -1,12 +1,11 @@
 // Password encryption/decryption with strong bcrypt
 import * as Bcrypt from 'bcrypt';
-
-const saltRounds = 10;
+import config from './config';
 
 let Passwords: any = {};
 
 Passwords.hashPassword = function(plainTextPassword: string) {
-	return Bcrypt.hash(plainTextPassword, saltRounds); // Returns a promise
+	return Bcrypt.hash(plainTextPassword, config.saltRounds); // Returns a promise
 };
 
 Passwords.comparePassword = function(plainTextPassword: string, hash: string){
