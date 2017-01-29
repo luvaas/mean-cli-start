@@ -27,4 +27,12 @@ export class AuthService {
 		localStorage.removeItem('currentUser');
 		this.isLoggedIn = false;
 	}
+
+	register(email: string, password: string) {
+		return this.http.post('/api/register', { email: email, password: password })
+			.map((response: Response) => {
+				let results = response.json();
+				return results;
+			});
+	}
 }

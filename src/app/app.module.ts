@@ -20,10 +20,12 @@ import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { MessageComponent } from './_directives/message/message.component';
 import { MessageService } from './_services/message.service';
+import { RegisterComponent } from './register/register.component';
 
 const ROUTES = [
 	{ path: '', component: HomeComponent },
 	{ path: 'login', component: LoginComponent },
+	{ path: 'register', component: RegisterComponent },
 	// 404
 	{ path: '**', component: PageNotFoundComponent }
 ];
@@ -34,7 +36,8 @@ const ROUTES = [
 		HomeComponent,
 		PageNotFoundComponent,
 		LoginComponent,
-		MessageComponent
+		MessageComponent,
+		RegisterComponent
 	],
 	imports: [
 		BrowserModule,

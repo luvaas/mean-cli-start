@@ -8,21 +8,6 @@ import { User } from '../_models/user';
 export class UserService {
 	constructor(private http: Http) { }
 
-	// Get all users from the API
-	// getUsers() {
-	// 	return this.http.get('/api/users')
-	// 		.map(function(res){
-	// 			console.log('res.json:', res.json());
-	// 			return res.json();
-	// 		});
-	// }
-
-	// // Add an user
-	// addUser(data) {
-	// 	return this.http.post('/api/users', data)
-	// 		.map(res => res.json());
-	// }
-
 	getAll() {
 		return this.http.get('/api/users', this.jwt()).map((response: Response) => response.json());
 	}

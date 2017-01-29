@@ -15,6 +15,7 @@ It also includes the following goodies:
 * SCSS-based CSS
 * [Bootstrap v4](https://v4-alpha.getbootstrap.com/) integration
 * Logging via [Bunyan](https://github.com/trentm/node-bunyan)
+* Q promises instead of the pseudo promises from mongoose
 
 Because this app uses a full-fledged Mongo DB and Express it has its own API server for sending data to your Angular 2 app.  No separate server setup required.  If you'd prefer not to use the server for sending DB data to your front-end you can easily repurpose it as a [BFF](https://alexandreesl.com/2016/03/18/backend-for-frontends-a-microservices-pattern/).
 
