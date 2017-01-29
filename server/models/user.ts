@@ -3,13 +3,13 @@ import * as mongoose from 'mongoose';
 export interface IUser {
 	email		: string;
 	password	: string;
-	isAdmin		: boolean;
+	admin		: boolean;
 };
 
 const userSchema = new mongoose.Schema({
 	email 		: String,
 	password 	: String,
-	isAdmin 	: { type : Boolean, default : false }
+	admin 		: { type : Boolean, default : false }
 });
 
 interface IUserModel extends IUser, mongoose.Document { }
