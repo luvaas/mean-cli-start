@@ -2,8 +2,14 @@ import { Router } from 'express';
 
 const authRouter = Router();
 
+// const env = app.get('env');
+// const config = require('./config/config.' + env);
+// app.set('config', config);
+// console.log('config:', config);
+
 authRouter.route('/authenticate').post((req, res) => {
-	const Model = require('../../models/user').default;
+
+	let Model = require('../../models/user').default;
 
 	let results: any = {
 		errors 	: [],
@@ -24,6 +30,7 @@ authRouter.route('/authenticate').post((req, res) => {
 				user = user.toObject ? user.toObject() : user;
 				user.token = 'hello world'; // TODO: Add a real token here
 				results.user = user;
+
 			}
 
 			return res.json(results);

@@ -8,7 +8,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 	constructor(private authService: AuthService, private router: Router) {}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-		//The ActivatedRouteSnapshot contains the future route that will be activated and the RouterStateSnapshot contains the future RouterState of the application, should the user pass through the guard check.
+		// The ActivatedRouteSnapshot contains the future route that will be activated and the RouterStateSnapshot contains the future RouterState of the application, should the user pass through the guard check.
 		let url: string = state.url;
 
 		return this.checkLogin(url);

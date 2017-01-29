@@ -14,12 +14,12 @@ export class ManageUsersComponent implements OnInit {
 	error: string;
 	jwt: string;
 
-    currentUser: User;
-    users: User[] = [];
+	currentUser: User;
+	users: User[] = [];
 
-    constructor(private userService: UserService) {
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    }
+	constructor(private userService: UserService) {
+		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+	}
 
 	onSubmit() {
 
@@ -31,16 +31,16 @@ export class ManageUsersComponent implements OnInit {
 		);
 	}
 
-    deleteUser(id: number) {
-        this.userService.delete(id).subscribe(() => { this.getAllUsers() });
-    }
+	deleteUser(id: number) {
+		this.userService.delete(id).subscribe(() => { this.getAllUsers() });
+	}
 
-    private getAllUsers() {
-        this.userService.getAll().subscribe(users => { this.users = users; });
-    }
+	private getAllUsers() {
+		this.userService.getAll().subscribe(users => { this.users = users; });
+	}
 
 	ngOnInit() {
-        this.getAllUsers();
+		this.getAllUsers();
 
 	}
 }

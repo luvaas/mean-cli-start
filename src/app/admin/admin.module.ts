@@ -14,25 +14,25 @@ const adminRoutes: Routes = [
 	{
 		path: 'admin',
 		component: AdminComponent,
-    	canActivate: [AuthGuard], // Ensures user is authenticated before allowing access to this route
+		canActivate: [AuthGuard], // Ensures user is authenticated before allowing access to this route
 		children: [
 			{
 				path: '', // This is a component-less route, which makes it easier to guard child routes,
-        		canActivateChild: [AuthGuard], // Ensures user is authenticated before allowing access to any child route
-		        children: [
+				canActivateChild: [AuthGuard], // Ensures user is authenticated before allowing access to any child route
+				children: [
 					{ path: 'users', component: ManageUsersComponent },
 					// { path: 'resume', component: ManageResumeComponent },
 					// { path: 'portfolio', component: ManagePortfolioComponent },
 					{ path: '', component: AdminHomeComponent }
-		        ]
-		    }
+				]
+			}
 		]
 	}
 ];
 
 @NgModule({
 	imports: [
-    	CommonModule,
+		CommonModule,
 		RouterModule.forChild(adminRoutes)
 	],
 	exports: [
