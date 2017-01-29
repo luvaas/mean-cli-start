@@ -1,7 +1,7 @@
-let config = require('./config.global');
+let devConfig: any = require('./config.global');
 
-config.debugmode = true;
-config.hostname = 'localhost:3000';
-config.world = 'world - dev';
+devConfig.debugmode = true;
+devConfig.hostname = 'localhost:3000';
+devConfig.world = 'world - dev';
 
-module.exports = config;
+module.exports = devConfig;

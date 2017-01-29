@@ -11,16 +11,10 @@ const app: express.Express = express();
 
 // Load config files and store in Express
 const env = app.get('env');
-console.log('env = ' + env);
-
-
-// import * as config from ('./config/config.development').default;
-
 let config = require('./config/config.' + env);
-console.log('config:', config);
-console.log('config.hello=' + config.hello);
+app.set('config', config);
+
 console.log('config.world=' + config.world);
-// app.set('config', config);
 
 // View engine setup (This is only ever used for displaying error pages)
 app.set('views', path.join(__dirname, 'views'));

@@ -1,5 +1,7 @@
-import { GlobalConfig } from './config.global';
+let prodConfig: any = require('./config.global');
 
-export class Config extends GlobalConfig {
-	world: string = 'world - prod';
-}
+prodConfig.debugmode = true;
+prodConfig.hostname = 'localhost:3000';
+prodConfig.world = 'world - prod';
+
+module.exports = prodConfig;
