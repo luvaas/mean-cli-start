@@ -1,6 +1,6 @@
 import { MeanStartPage } from './app.po';
 
-describe('luvaas App', function() {
+describe('mean-start-cli App', function() {
 	let page: MeanStartPage;
 
 	beforeEach(() => {

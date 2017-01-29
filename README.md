@@ -1,4 +1,4 @@
-# luvaas.com Portfolio website
+# MEAN Start CLI
 
 ## Prerequisites
 
@@ -7,7 +7,8 @@
 * [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 Install global dependencies:
-```bash
+```
+bash
 npm install -g typescript
 npm install -g angular-cli
 ```
@@ -15,18 +16,20 @@ npm install -g angular-cli
 ## Install npm packages
 
 Install the npm packages described in the `package.json`:
-```bash
+```
+bash
 npm install
 ```
 
 ## Development server
 Start the dev server:
-```bash
+```
+bash
 npm run dev
 ```
 
 Navigate to [http://localhost:4200/](http://localhost:4200/) for the app.
-Shut it down manually with `Ctrl-C`.
+Shut it down manually with `Ctrl-C` to kill both the angular-cli server and the express server.
 
 The `npm run dev` script starts 2 servers concurrently:
 
@@ -38,6 +41,23 @@ The `express` server will be automatically restarted by `nodemon` if you change 
 
 The `angular-cli` dev server is configured to proxy all API calls to `http://localhost:4200/api` to go to the `express` server `http://localhost:3000/api`, 
 so that the whole app is available at [http://localhost:4200/](http://localhost:4200/).
+
+## Production server
+Kick off a production build and start the server:
+```
+bash
+npm run prod
+```
+
+The `npm run prod` script builds the `angular` app using `ng build --prod`, sets `NODE_ENV=production`, and then starts the `express` server.  Because the entire `angular` app has already been built and we don't need to monitor any files for changes, all we need is to serve the angular packages and provide middlewear for the `/api` routes.  The `express` server does this by making everything available on the `:3000` port.
+
+## Config Files
+Rather than hard-coding strings in the `express` server files, we make environment-specific values available via config files.  When running the `development server` the app.ts
+
+Values from the config file can be made available within any .ts file under `server/` like so:
+```
+
+```
 
 ## Develop
 
