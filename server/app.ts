@@ -87,7 +87,7 @@ app.use((error: any, req, res, next) => {
 (<any>mongoose).Promise = Q.Promise;
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost/luvaas');
+mongoose.connect(config.db);
 const db = mongoose.connection;
 db.on('error', log.error.bind(log, 'DB connection error:'));
 db.once('open', () => {
