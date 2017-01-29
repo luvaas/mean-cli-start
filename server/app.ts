@@ -2,35 +2,31 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as path from 'path';
-import * as logger from 'morgan';
 import * as mongoose from 'mongoose';
 import * as Q from 'q';
-
+import log from './helpers/bunyan';
 
 const app: express.Express = express();
+const env = require('get-env')();
+log.info('Environment = ' + env);
 
-// Load config files and store in Express
-const env = app.get('env');
-let config = require('./config/config.' + env);
+// Load config file
+let config: any = require('./config/config.' + env);
 app.set('config', config);
 
-console.log('config.world=' + config.world);
-
 // View engine setup (This is only ever used for displaying error pages)
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'pug');
 
 // TODO: Uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-
-// app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Create Express routes using all files in the routes directory
-console.log('\nCreate express routes...');
+log.info('Create express routes...');
 const routeModules = require('require-all')({
 	dirname: __dirname + '/routes',
 	filter: /^([^\.].*)\.(ts|js)$/,
@@ -43,7 +39,7 @@ function resolve(root: string, modules): void {
 		}
 		const module = modules[name];
 		if (module.default && module.default.route) {
-			console.log(`Add router ${root + name}`);
+			log.info(`Add router ${root + name}`);
 			const router = module.default as express.Router;
 			app.use(root, router);
 		} else {
@@ -68,7 +64,7 @@ app.use((req, res, next) => {
 // Error handlers
 
 // Development error handler will print stacktrace
-if (env === 'development') {
+if (env === 'dev') {
 	app.use((error: any, req, res, next) => {
 		res.status(500).send({
 			message: error.message,
@@ -86,7 +82,6 @@ app.use((error: any, req, res, next) => {
 	return null;
 });
 
-export default app;
 
 // Set up mongoose to use promises via the Q library
 (<any>mongoose).Promise = Q.Promise;
@@ -94,7 +89,10 @@ export default app;
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost/luvaas');
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
+db.on('error', log.error.bind(log, 'DB connection error:'));
 db.once('open', () => {
-	console.log('MongoDB connected');
+	log.info('MongoDB connected');
 });
+
+export default app;
+

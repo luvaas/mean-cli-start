@@ -1,7 +1,7 @@
 import * as http from 'http';
 import * as debugModule from 'debug';
-
 import app from './app';
+import log from './helpers/bunyan';
 
 const debug = debugModule('express-start:server');
 
@@ -16,9 +16,7 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-/**
- * Normalize a port into a number, string, or false.
- */
+// Normalize a port into a number, string, or false.
 function normalizePort(val: any): number | string | boolean {
 	let port = parseInt(val, 10);
 
@@ -35,9 +33,7 @@ function normalizePort(val: any): number | string | boolean {
 	return false;
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
+// Event listener for HTTP server "error" event.
 function onError(error) {
 	if (error.syscall !== 'listen') {
 		throw error;
@@ -45,7 +41,7 @@ function onError(error) {
 
 	let bind = typeof port === 'string'
 		? 'Pipe ' + port
-		: 'Port ' + port
+		: 'Port ' + port;
 
 	// Handle specific listen errors with friendly messages
 	switch (error.code) {
@@ -62,9 +58,7 @@ function onError(error) {
 	}
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+// Event listener for HTTP server "listening" event.
 function onListening() {
 	let addr = server.address();
 	let bind = typeof addr === 'string'
@@ -72,5 +66,5 @@ function onListening() {
 		: 'port ' + addr.port;
 
 	debug('Listening on ' + bind);
-	console.log('Listening on ' + bind);
+	log.info('Listening on ' + bind);
 }

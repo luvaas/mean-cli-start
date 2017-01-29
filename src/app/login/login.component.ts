@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
 import { MessageService } from '../_services/message.service';
+import log from './helpers/bunyan';
 
 @Component({
 	//moduleId: module.id,
@@ -33,8 +34,8 @@ export class LoginComponent implements OnInit {
 
 					let user = results.user;
 
-					console.log('results:', results);
-					console.log('user:', user);
+					log.info('results:', results);
+					log.info('user:', user);
 
 					if (user && user.token) {
 						// Store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -58,7 +59,7 @@ export class LoginComponent implements OnInit {
 	}
 
 	logout(next) {
-		console.log('logging out');
+		log.info('logging out');
 		this.authService.logout();
 		this.setMessage();
 		if (next) { next(); }

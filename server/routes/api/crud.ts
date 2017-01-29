@@ -1,6 +1,6 @@
 // CRUD: Simple Create, Read, Update, Delete api operations for data management
-
 import { Router } from 'express';
+import log from '../../helpers/bunyan';
 
 const crudRouter = Router();
 
@@ -10,7 +10,7 @@ const models = require('require-all')({
 });
 
 Object.keys(models).forEach((name) => {
-	console.log(`REST routes added for ${name}`);
+	log.info(`REST routes added for ${name}`);
 	const model = models[name].default;
 
 	crudRouter.route('/' + name + 's')

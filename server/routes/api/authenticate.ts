@@ -2,11 +2,6 @@ import { Router } from 'express';
 
 const authRouter = Router();
 
-// const env = app.get('env');
-// const config = require('./config/config.' + env);
-// app.set('config', config);
-// console.log('config:', config);
-
 authRouter.route('/authenticate').post((req, res) => {
 
 	let Model = require('../../models/user').default;
