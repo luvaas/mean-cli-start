@@ -22,7 +22,7 @@
 			</ul>
 
 			<div class="form-inline my-2 my-lg-0">
-				<a class="logout-link" [routerLink]="['/login']" *ngIf="authService.isLoggedIn">Logout</a>
+				<a class="logout-link" [routerLink]="['/login']" *ngIf="authService.isLoggedIn()">Logout</a>
 			</div>
 
 		</div>

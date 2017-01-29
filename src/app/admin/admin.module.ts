@@ -8,7 +8,7 @@ import { UserService } from '../_services/user.service';
 
 // Authentication (Using simple authentication via JWT and not anything fancy like OAuth2)
 import { AuthService } from '../_services/auth.service';
-import { AuthGuard } from '../_guards/auth-guard.service';
+import { AuthGuard } from './_guards/auth-guard.service';
 
 const adminRoutes: Routes = [
 	{

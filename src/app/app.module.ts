@@ -21,11 +21,13 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { MessageComponent } from './_directives/message/message.component';
 import { MessageService } from './_services/message.service';
 import { RegisterComponent } from './register/register.component';
+import { ForbiddenComponent } from './forbidden/forbidden.component';
 
 const ROUTES = [
 	{ path: '', component: HomeComponent },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'register', component: RegisterComponent },
+	{ path: 'forbidden', component: ForbiddenComponent },
 	// 404
 	{ path: '**', component: PageNotFoundComponent }
 ];
@@ -37,7 +39,8 @@ const ROUTES = [
 		PageNotFoundComponent,
 		LoginComponent,
 		MessageComponent,
-		RegisterComponent
+		RegisterComponent,
+		ForbiddenComponent
 	],
 	imports: [
 		BrowserModule,

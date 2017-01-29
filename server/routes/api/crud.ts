@@ -21,17 +21,21 @@ Object.keys(models).forEach((name) => {
 			m.save((err) => {
 				if (err) {
 					res.json({ error: err });
-				} else {
+				}
+				else {
 					res.json(m);
 				}
 			});
 		})
 		// R(ead) all documents from model
 		.get((req, res) => {
-			model.find((err, ms) => {
+			// Special handling for user objects to remove the password field before sending to the client
+			let select: string = (name === 'user') ? '-password' : '';
+			model.find({}, select, (err, ms) => {
 				if (err) {
 					res.json({ error: err });
-				} else {
+				}
+				else {
 					res.json(ms);
 				}
 			});
@@ -43,7 +47,8 @@ Object.keys(models).forEach((name) => {
 			model.findById(req.params._id, (err, m) => {
 				if (err) {
 					res.json({ error: err });
-				} else {
+				}
+				else {
 					res.json(m);
 				}
 			});
@@ -59,7 +64,8 @@ Object.keys(models).forEach((name) => {
 				m.save((err) => {
 					if (err) {
 						res.json({ error: err });
-					} else {
+					}
+					else {
 						res.json(m);
 					}
 				});

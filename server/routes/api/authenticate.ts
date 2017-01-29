@@ -9,35 +9,43 @@ authRouter.route('/authenticate').post((req, res) => {
 	let Model = require('../../models/user').default;
 
 	let results: any = {
-		errors 	: [],
 		info 	: '',
 		user 	: {},
 		success : false
 	};
 
-	Model.findOne({email: req.body.email, password: req.body.password}).exec()
+	Model.findOne({email: req.body.email}).exec()
 		.then((user) => {
-			if (!user) {
-				results.info = 'No user found with matching criteria.';
-				results.success = false;
-				return res.json(results);
+			if (!user || !user.password) {
+				throw 'No user found with matching criteria.';
 			}
 			else {
-				results.info = 'User found successfully';
-				results.success = true;
-				user = user.toObject ? user.toObject() : user;
+				return Passwords.comparePassword(req.body.password, user.password)
+					.then(function(matches) {
+						if (matches) {
+							// Password matches bcrypt hash
+							user = user.toObject ? user.toObject() : user;
 
-				Passwords.getToken(function(err: Error, token: string) {
-					user.token = token; // TODO: Add a real token here
-					results.user = user;
-					return res.json(results);
-				});
+							// TODO: make this a promise
+							Passwords.getToken(function(err: Error, token: string) {
+								// Success!
+								user.token = token;
+								delete user.password; // Remove the password property before it gets sent back to the client
+								results.user = user;
+								results.info = 'Successfully found user.';
+								results.success = true;
+
+								return res.json(results);
+							});
+						}
+						else {
+							throw 'Passwords don\'t match';
+						}
+					});
 			}
 		})
 		.catch((err) => {
-			let error = 'Error during find user. Err: ' + err;
-			results.errors.push(error);
-			results.info = error;
+			results.info = 'Invalid username or password.';
 			results.success = false;
 
 			return res.json(results);
@@ -62,64 +70,43 @@ authRouter.route('/register').post((req, res) => {
 	Model.findOne({email: req.body.email}).exec()
 		.then((user) => {
 			if (user) {
-				log.info('Email already exists');
-
-				results.info = 'Email address already in use.';
-				results.success = false;
+				throw 'Email address already in use.';
 			}
 			else {
-				log.info('creating new user');
 				let newUser = new Model();
 				newUser.email = req.body.email;
 
-				Passwords.hashPassword(req.body.password)
+				return Passwords.hashPassword(req.body.password, 10)
 					.then((hash) => {
 						newUser.password = hash;
 
-						console.log('newUser:', newUser);
+						return newUser.save()
+							.then((savedUser) => {
+								if (!savedUser) {
+									throw 'Could not save new user.';
+								}
+								else {
+									savedUser = savedUser.toObject ? savedUser.toObject() : savedUser;
 
-						newUser.save(function(err, savedUser) {
-							if (err) {
-								var error = 'Error during save new user. Err: ' + err;
-								results.errors.push(error);
-								results.info = 'Error creating new account.';
-								results.success = false;
+									// TODO: make this a promise
+									Passwords.getToken(function(err: Error, token: string) {
+										// Success!
 
-								return res.json(results);
-							}
-							else {
-								log.debug('account saved');
+										savedUser.token = token;
+										delete user.password; // Remove the password property before it gets sent back to the client
+										results.user = savedUser;
+										results.info = 'User created successfully';
+										results.success = true;
 
-								savedUser = savedUser.toObject ? savedUser.toObject() : savedUser;
-								Passwords.getToken(function(err: Error, token: string) {
-									savedUser.token = token; // TODO: Add a real token here
-									results.user = user;
-									results.user = savedUser;
-									results.info = 'User created successfully';
-									results.success = true;
-
-									return res.json(results);
-								});
-							}
-						});
-					})
-					.catch((err) => {
-						var error = 'Error hashing password.  Err: ' + err;
-						log.error(error);
-						results.errors.push(error);
-						results.info = 'Error creating new account.';
-						results.success = false;
-
-						return res.json(results);
+										return res.json(results);
+									});
+								}
+							});
 					});
 			}
 		})
 		.catch((err) => {
-			let error = 'Error during find user. Err: ' + err;
-					log.debug('account saved');
-
-			results.errors.push(err);
-			results.info = error;
+			results.info = 'Could not create new user. ' + err;
 			results.success = false;
 
 			return res.json(results);

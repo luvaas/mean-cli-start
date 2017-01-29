@@ -29,15 +29,13 @@ export class RegisterComponent implements OnInit {
 					console.log('results:', results);
 					console.log('user:', user);
 
-					if (user && user.token) {
-						// TODO: Store user details and jwt token in local storage to keep user logged in between page refreshes
-						localStorage.setItem('currentUser', JSON.stringify(user));
-						this.authService.isLoggedIn = true;
-						this.router.navigate([this.returnUrl]);
+					if (this.authService.isLoggedIn()) {
+						// Successfully logged in
+						return this.router.navigate([this.returnUrl]);
 					}
 					else {
-						this.authService.isLoggedIn = false;
-						this.messageService.error(results.info);
+						// Not able to register and log in user
+						return this.messageService.error(results.info);
 					}
 				},
 				error => {
