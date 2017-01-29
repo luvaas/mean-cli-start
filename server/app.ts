@@ -4,12 +4,23 @@ import * as cookieParser from 'cookie-parser';
 import * as path from 'path';
 import * as logger from 'morgan';
 import * as mongoose from 'mongoose';
-import * as Q  from 'q';
+import * as Q from 'q';
 
-// import index from './routes/index';
-// import users from './routes/users';
 
 const app: express.Express = express();
+
+// Load config files and store in Express
+const env = app.get('env');
+console.log('env = ' + env);
+
+
+// import * as config from ('./config/config.development').default;
+
+let config = require('./config/config.' + env);
+console.log('config:', config);
+console.log('config.hello=' + config.hello);
+console.log('config.world=' + config.world);
+// app.set('config', config);
 
 // View engine setup (This is only ever used for displaying error pages)
 app.set('views', path.join(__dirname, 'views'));
@@ -17,14 +28,12 @@ app.set('view engine', 'pug');
 
 // TODO: Uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+
+// app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// app.use('/', index);
-// app.use('/users', users);
 
 // Create Express routes using all files in the routes directory
 console.log('\nCreate express routes...');
@@ -65,7 +74,7 @@ app.use((req, res, next) => {
 // Error handlers
 
 // Development error handler will print stacktrace
-if (app.get('env') === 'development') {
+if (env === 'development') {
 	app.use((error: any, req, res, next) => {
 		res.status(500).send({
 			message: error.message,
