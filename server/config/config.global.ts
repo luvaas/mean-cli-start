@@ -1,4 +1,5 @@
-module.exports = {
-	hello : 'hello',
-	debugmode : true,
+var config: any = {
+
 };
+
+module.exports = config;

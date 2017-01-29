@@ -1,5 +1,5 @@
-let prodConfig: any = require('./config.global');
+var config: any = require('./config.global');
 
-prodConfig.db = 'mongodb://localhost/api-server';
+config.db = 'mongodb://localhost/api-server';
 
-module.exports = prodConfig;
+module.exports = config;
