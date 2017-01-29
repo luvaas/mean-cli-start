@@ -1,7 +1,7 @@
 {
 	"project": {
 		"version": "1.0.0-beta.24",
-		"name": "mean-start-cli",
+		"name": "mean-cli-start",
 		"author" : "Darren Luvaas"
 	},
 	"apps": [

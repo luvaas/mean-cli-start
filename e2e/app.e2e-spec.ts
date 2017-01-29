@@ -1,6 +1,6 @@
 import { MeanStartPage } from './app.po';
 
-describe('mean-start-cli App', function() {
+describe('mean-cli-start App', function() {
 	let page: MeanStartPage;
 
 	beforeEach(() => {

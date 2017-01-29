@@ -1,4 +1,4 @@
-# MEAN Start CLI
+# MEAN-CLI Start
 
 This quick-start app includes the following:
 
@@ -47,7 +47,7 @@ npm install -g angular-cli
 
 Clone this repo into new project folder (e.g., `my-proj`):
 ```bash
-git clone https://github.com/luvaas/mean-start-cli my-proj
+git clone https://github.com/luvaas/mean-cli-start my-proj
 cd my-proj
 ```
 
@@ -113,7 +113,7 @@ npm run prod
 The `npm run prod` script builds the Angular app using `ng build --prod`, sets `NODE_ENV=production`, and then starts the Express server.  Because the entire Angular app has already been built and we don't need to monitor any files for changes, all we need is to serve the angular packages and provide middlewear for the `/api` routes.  The Express server does this by making everything available on the `:3000` port.
 
 ## Config Files
-Rather than hard-coding strings in the Express server files, we make environment-specific values available via config files.  The Express server will load either `server/config/config.development.ts` or `server/config/config.production.ts` based on the environment set by the start script.  Config values common to all environments can be set in `server/config/config.production.ts`. 
+Rather than hard-coding strings in the Express server files, we make environment-specific values available via config files.  The Express server will load either `server/config/config.development.ts` or `server/config/config.production.ts` based on the environment set by the start script.  Config values common to all environments can be set in `server/config/config.production.ts` and then (optionally) overwritten by setting the same values in `server/config/config.[env].ts`.
 
 ## Develop
 
@@ -125,7 +125,17 @@ E.g. with the `User` model added, below REST APIs are created automatically:
 * PUT     /api/users/:user_id  - Update a user with new info
 * DELETE  /api/users/:user_id  - Delete a user
 
->TODO: Role-based access control required.
+## Role-Based Access Control
+The `admin` section includes its own routes (inside the `admin.module.ts` file) along with a folder called `_guards`.  This design pattern allows us set guards on all of the routes within the admin section to prevent access from unauthorized users.  We use Angular routes with guards to intercept protected routes, redirect users to the login page, and then use `api/authenticate` to log the user in. 
+
+Bcrypt is used to compare the user's password with the bcrypted password hash stored in the database.  If all goes well, the user is logged in successfully.  When the user passes authentication, a JWT token is returned from `api/authenticate` and stored in the localstorage of the user's browser.  Whenever the user attempts to access a restricted page, two layers of authentication prevent unauthorized access:
+
+- Angular uses auth-guards to determine whether the user object stored in localstorage has sufficient permission to access a given route.
+- If so, the user is routed to the requested page.  Before any data is shown, however, the user's unique JWT token is used by the API server to verify the user's identify and their access levels before returning any data to display on the page.
+
+All of this work behind the scenes is handled for you. 
+
+The JWT stored on the client is set to expire after 10 days by default (at which point the user will no longer be considered logged in).  You can change this value in `server/config/config.[env].ts`.  The user will remain logged in until either the token expires or they hit the `login` page.
 
 ### Custom API
 
