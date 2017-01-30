@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import log from '../../helpers/bunyan';
-import Passwords from '../../helpers/passwords';
+import config from '../../helpers/config';
+import * as Jwt from 'jsonwebtoken';
+import * as Bcrypt from 'bcrypt';
 
 const authRouter = Router();
 
@@ -20,22 +22,28 @@ authRouter.route('/authenticate').post((req, res) => {
 				throw 'No user found with matching criteria.';
 			}
 			else {
-				return Passwords.comparePassword(req.body.password, user.password)
+				return Bcrypt.compare(req.body.password, user.password)
 					.then(function(matches) {
 						if (matches) {
 							// Password matches bcrypt hash
 							user = user.toObject ? user.toObject() : user;
 
-							// TODO: make this a promise
-							Passwords.getToken(function(err: Error, token: string) {
-								// Success!
-								user.token = token;
-								delete user.password; // Remove the password property before it gets sent back to the client
-								results.user = user;
-								results.info = 'Successfully found user.';
-								results.success = true;
+							// Create a JWT token
+							Jwt.sign(user, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
+								console.log('got token:', token);
+								if (err || !token) {
+									throw 'Could not get token';
+								}
+								else {
+									// Success!
+									user.token = token;
+									delete user.password; // Remove the password property before it gets sent back to the client
+									results.user = user;
+									results.info = 'Successfully found user.';
+									results.success = true;
 
-								return res.json(results);
+									return res.json(results);
+								}
 							});
 						}
 						else {
@@ -76,7 +84,7 @@ authRouter.route('/register').post((req, res) => {
 				let newUser = new Model();
 				newUser.email = req.body.email;
 
-				return Passwords.hashPassword(req.body.password, 10)
+				return Bcrypt.hash(req.body.password, config.saltRounds)
 					.then((hash) => {
 						newUser.password = hash;
 
@@ -88,17 +96,21 @@ authRouter.route('/register').post((req, res) => {
 								else {
 									savedUser = savedUser.toObject ? savedUser.toObject() : savedUser;
 
-									// TODO: make this a promise
-									Passwords.getToken(function(err: Error, token: string) {
-										// Success!
+									// Create a JWT token
+									Jwt.sign(user, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
+										if (err || !token) {
+											throw 'Could not get token';
+										}
+										else {
+											// Success!
+											savedUser.token = token;
+											delete user.password; // Remove the password property before it gets sent back to the client
+											results.user = savedUser;
+											results.info = 'User created successfully';
+											results.success = true;
 
-										savedUser.token = token;
-										delete user.password; // Remove the password property before it gets sent back to the client
-										results.user = savedUser;
-										results.info = 'User created successfully';
-										results.success = true;
-
-										return res.json(results);
+											return res.json(results);
+										}
 									});
 								}
 							});

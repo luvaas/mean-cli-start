@@ -56,9 +56,6 @@ app.use((req, res) => {
 // Set up mongoose to use promises via the Q library
 (<any>mongoose).Promise = Q.Promise;
 
-// Set up the API secret
-app.set('superSecret', config.secret);
-
 // Connect to MongoDB
 mongoose.connect(config.db);
 const db = mongoose.connection;
@@ -69,7 +66,7 @@ db.once('open', () => {
 
 // Handle errors
 app.use((error: any, req, res, next) => {
-	log.warn(error);
+	log.error(error);
 
 	// Handle 404 as an error
 	if (error.status === 404) {
