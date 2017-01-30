@@ -1,8 +1,5 @@
 // CRUD: Simple Create, Read, Update, Delete api operations for data management.
 
-// TODO: Make sure we validate the current user's token and look up the current user's access level (i.e., admin) before returning data.
-
-
 import { Router } from 'express';
 import log from '../../helpers/bunyan';
 

@@ -2,11 +2,12 @@
 
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { AuthService } from '../_services/auth.service';
 import { User } from '../_models/user';
 
 @Injectable()
 export class UserService {
-	constructor(private http: Http) { }
+	constructor(private http: Http, private authService: AuthService) { }
 
 	getAll() {
 		return this.http.get('/api/users', this.jwt()).map((response: Response) => response.json());
@@ -28,14 +29,13 @@ export class UserService {
 		return this.http.delete('/api/users/' + id, this.jwt()).map((response: Response) => response.json());
 	}
 
-	// Private helper methods
+	/***** Utilities *****/
 
 	private jwt() {
-		// TODO:
-		// create authorization header with jwt token
-		let currentUser = JSON.parse(localStorage.getItem('user'));
-		if (currentUser && currentUser.token) {
-			let headers = new Headers({ 'Authorization': 'Bearer ' + currentUser.token });
+		// Add JWT token to all request headers
+		let token = this.authService.getToken();
+		if (token) {
+			let headers = new Headers({ 'Authorization': 'Bearer ' + token });
 			return new RequestOptions({ headers: headers });
 		}
 	}

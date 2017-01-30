@@ -27,8 +27,9 @@ authRouter.route('/authenticate').post((req, res) => {
 						if (matches) {
 							// Password matches bcrypt hash
 							user = user.toObject ? user.toObject() : user;
+							delete user.password; // Remove the password property before it is added to the JWT payload or sent to the client
 
-							// Create a JWT token
+							// Use our secret to create a JWT token
 							Jwt.sign(user, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
 								console.log('got token:', token);
 								if (err || !token) {
@@ -36,9 +37,7 @@ authRouter.route('/authenticate').post((req, res) => {
 								}
 								else {
 									// Success!
-									user.token = token;
-									delete user.password; // Remove the password property before it gets sent back to the client
-									results.user = user;
+									results.token = token;
 									results.info = 'Successfully found user.';
 									results.success = true;
 
@@ -95,17 +94,16 @@ authRouter.route('/register').post((req, res) => {
 								}
 								else {
 									savedUser = savedUser.toObject ? savedUser.toObject() : savedUser;
+									delete savedUser.password; // Remove the password property before it is added to the JWT payload or sent to the client
 
-									// Create a JWT token
+									// Use our secret to create a JWT token
 									Jwt.sign(user, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
 										if (err || !token) {
 											throw 'Could not get token';
 										}
 										else {
 											// Success!
-											savedUser.token = token;
-											delete user.password; // Remove the password property before it gets sent back to the client
-											results.user = savedUser;
+											results.token = token;
 											results.info = 'User created successfully';
 											results.success = true;
 

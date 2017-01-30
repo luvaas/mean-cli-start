@@ -20,14 +20,7 @@ export class RegisterComponent implements OnInit {
 		this.authService.register(this.model.email, this.model.password)
 			.subscribe(
 				results => {
-
-					console.log('got results back.  results:', results);
 					this.loading = false;
-
-					let user = results.user;
-
-					console.log('results:', results);
-					console.log('user:', user);
 
 					if (this.authService.isLoggedIn()) {
 						// Successfully logged in

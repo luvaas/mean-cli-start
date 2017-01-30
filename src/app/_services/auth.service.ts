@@ -13,29 +13,14 @@ export class AuthService {
 
 	constructor(private http: Http) { }
 
-	setUserLoggedIn(user: any) {
-		// Store user details and jwt token in local storage to keep user logged in between page refreshes
-		localStorage.setItem('user', JSON.stringify(user));
-	}
-
-	getCurrentUser() {
-		let currentUser = JSON.parse(localStorage.getItem('user')) || undefined; // Get the user, if any, from local storage
-		return currentUser;
-	}
-
-	isLoggedIn() {
-		let currentUser = this.getCurrentUser();
-		return (currentUser && currentUser.token); // If there is an user in local storage and they have a token, they are logged in.
-	}
-
 	login(email: string, password: string) {
 		return this.http.post('/api/authenticate', { email: email, password: password })
 			.map((response: Response) => {
 				let results = response.json();
-				let user = results.user;
+				let token = results.token;
 
-				if (results.success && user && user.token) {
-					this.setUserLoggedIn(user);
+				if (results.success && token) {
+					this.setToken(token);
 				}
 
 				return results;
@@ -44,20 +29,71 @@ export class AuthService {
 
 	logout() {
 		// Remove user from local storage to log user out
-		localStorage.removeItem('user');
+		localStorage.removeItem('token');
 	}
 
 	register(email: string, password: string) {
 		return this.http.post('/api/register', { email: email, password: password })
 			.map((response: Response) => {
 				let results = response.json();
-				let user = results.user;
+				let token = results.token;
 
-				if (results.success && user && user.token) {
-					this.setUserLoggedIn(user);
+				if (results.success && token) {
+					this.setToken(token);
 				}
 
 				return results;
 			});
+	}
+
+	setToken(token: any) {
+		// Store jwt token in local storage to keep user logged in between page refreshes
+		localStorage.setItem('token', JSON.stringify(token));
+	}
+
+	isLoggedIn() {
+		let token = this.getToken();
+		let isTokenValid = this.getTokenValid(token);
+
+		// TODO: decode JWT and make sure it's not expired
+		return isTokenValid ? true : false; // If there is token in local storage, they are logged in.
+	}
+
+	getCurrentUser() {
+		// Get the token from local storage and decode its payload to get the user
+		let decodedTokenPayload = this.getDecodedToken();
+
+		return decodedTokenPayload;
+	}
+
+	getToken() {
+		// Get the jwt token from local storage
+		return JSON.parse(localStorage.getItem('token')) || undefined;
+	}
+
+	private getDecodedToken() {
+		// Decode and return the JWT
+		let jwt_decode = require('jwt-decode');
+
+		let token = this.getToken();
+
+		if (token) {
+			let decoded = jwt_decode(token);
+			return decoded;
+		}
+		else {
+			return undefined;
+		};
+	}
+
+	private getTokenValid(token) {
+		// Check the expiration date of the token to make sure it's still validif(decodedToken.exp < dateNow.getTime())
+		if (!token) { return false; };
+
+		let now = new Date();
+		let decodedToken = this.getDecodedToken();
+		let isValid = (decodedToken.exp < now.getTime()) ? true : false;
+
+		return isValid;
 	}
 }

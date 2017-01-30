@@ -25,11 +25,6 @@ export class LoginComponent implements OnInit {
 				results => {
 					this.loading = false;
 
-					let user = results.user;
-
-					console.log('results:', results);
-					console.log('user:', user);
-
 					if (this.authService.isLoggedIn()) {
 						// Successfully logged in
 						return this.router.navigate([this.returnUrl]);
@@ -47,7 +42,6 @@ export class LoginComponent implements OnInit {
 	}
 
 	logout(next) {
-		console.log('logging out');
 		this.authService.logout();
 		if (next) { next(); }
 	}

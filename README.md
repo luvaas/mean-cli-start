@@ -115,31 +115,23 @@ The `npm run prod` script builds the Angular app using `ng build --prod`, sets `
 ## Config Files
 Rather than hard-coding strings in the Express server files, we make environment-specific values available via config files.  The Express server will load either `server/config/config.development.ts` or `server/config/config.production.ts` based on the environment set by the start script.  Config values common to all environments can be set in `server/config/config.production.ts` and then (optionally) overwritten by setting the same values in `server/config/config.[env].ts`.
 
-## Develop
-
-Model classes in `server/models/` directory are exposed as REST APIs by default.
-E.g. with the `User` model added, below REST APIs are created automatically:
-* POST    /api/users           - Create a User
-* GET     /api/users           - Get all the users
-* GET     /api/users/:user_id  - Get a single user
-* PUT     /api/users/:user_id  - Update a user with new info
-* DELETE  /api/users/:user_id  - Delete a user
-
 ## Role-Based Access Control
-The `admin` section includes its own routes (inside the `admin.module.ts` file) along with a folder called `_guards`.  This design pattern allows us set guards on all of the routes within the admin section to prevent access from unauthorized users.  We use Angular routes with guards to intercept protected routes, redirect users to the login page, and then use `api/authenticate` to log the user in. 
+The `admin` section includes its own routes (inside the `admin.module.ts` file) along with a folder called `_guards`.  This design pattern allows us to easily set guards on all of the routes within the admin section to prevent access from unauthorized users.  We use Angular routes with guards to intercept protected routes, redirect users to the login page when necessary, and then use `api/authenticate` to log the user in. 
 
-Bcrypt is used to compare the user's password with the bcrypted password hash stored in the database.  If all goes well, the user is logged in successfully.  When the user passes authentication, a JWT token is returned from `api/authenticate` and stored in the localstorage of the user's browser.  Whenever the user attempts to access a restricted page, two layers of authentication prevent unauthorized access:
+Bcrypt is used to compare the user's sent password with the bcrypted password hash stored in the database.  If all goes well, the user is logged in successfully.  When the user passes authentication, a JWT (token) is returned from `api/authenticate` and stored in the localstorage of the user's browser. The token contains the entire user object, minus their password, in the token's payload. Thereafter, whenever the user attempts to access a restricted page, two layers of authentication prevent unauthorized access:
 
-- Angular uses auth-guards to determine whether the user object stored in localstorage has sufficient permission to access a given route.
-- If so, the user is routed to the requested page.  Before any data is shown, however, the user's unique JWT token is used by the API server to verify the user's identify and their access levels before returning any data to display on the page.
+- First, Angular uses some auth-guards to determine whether the user has a JWT.  If so, it decodes the payload of the token on the client to verify that the user has sufficient permissions (i.e., they have the .admin property set on the user object) to access the route in question and, if so, passes them through.
+- Just passing a user through to a given secured route is relatively harmless, since that page doesn't have any sensitive data to display until it can fetch the data it needs from the API server.  Therefore, the second layer of protection happens when the client sends the JTW token back to the API server along with its request for data.  The API server looks at the token and verifies its digital signature using a secret.  Because the token already contains user info and we can verify that the token hasn't been tampered with, it doesn't need to do another DB call for the user and it can return the requested data right away.
 
 All of this work behind the scenes is handled for you. 
 
-The JWT stored on the client is set to expire after 10 days by default (at which point the user will no longer be considered logged in).  You can change this value in `server/config/config.[env].ts`.  The user will remain logged in until either the token expires or they hit the `login` page.
+The JWT stored on the client is set to expire after 24 hours by default (at which point the user will no longer be considered logged in).  You can change this value in `server/config/config.[env].ts`.  The user will remain logged in until either the token expires or they hit the `login` page (which clears the token).
+
+*NOTE:* It's important to note here that this app is not secured by SSL and cannot use HTTPS as is.  Doing so would require purchashing a certificate and installing it on your API server.  This is highly recommended but is beyond the scope of this project.  Without a secure connection with your server, your JWT will be subject to interception by [man-in-the-middle](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) attacks.
 
 ### Custom API
 
-Add API modules in `server/routes/api/` directory, e.g. `server/routes/api/demo/test.ts`:
+Add API modules in `server/routes/api/` directory, e.g. `server/routes/api/test.ts`:
 ```TypeScript
 import { Router } from 'express';
 

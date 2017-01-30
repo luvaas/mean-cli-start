@@ -26,7 +26,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
 		if (isLoggedIn){
 			// The user is logged in
-
 			if (currentUser.admin) {
 				// The user is logged in and they have admin rights
 				return true;

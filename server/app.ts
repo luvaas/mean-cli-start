@@ -70,8 +70,13 @@ app.use((error: any, req, res, next) => {
 
 	// Handle 404 as an error
 	if (error.status === 404) {
-		res.status(404).send({
+		res.status(404).json({
 			message: '404.  Not found.'
+		});
+	}
+	else if (error.name === 'UnauthorizedError') {
+		res.status(401).json({
+			message: '401.  Not authorized.'
 		});
 	}
 	else {
