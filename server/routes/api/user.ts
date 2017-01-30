@@ -8,7 +8,7 @@ import log from '../../helpers/bunyan';
 
 let modelName = 'user'; // This needs to exactly match the corresponding file name under /server/models/, minus the extension
 let modelPath = __dirname + '/../../models/';
-let model = require(modelPath + modelName);
+let model = require(modelPath + modelName).default;
 const crudRouter = Router();
 
 log.info(`Creating CRUD routes for ${modelName}`);
