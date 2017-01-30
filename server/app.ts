@@ -53,34 +53,6 @@ app.use((req, res) => {
 	res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
-// Catch 404 and forward to error handler
-app.use((req, res, next) => {
-	let err = new Error('Not Found');
-	err['status'] = 404;
-	next(err);
-});
-
-// Error handlers
-
-// Development error handler will print stacktrace
-if (env === 'dev') {
-	app.use((error: any, req, res, next) => {
-		res.status(500).send({
-			message: error.message,
-			error
-		});
-	});
-}
-
-// Production error handler (no stacktraces leaked to user)
-app.use((error: any, req, res, next) => {
-	res.status(500).send({
-		message: error.message,
-		error: {}
-	});
-	return null;
-});
-
 // Set up mongoose to use promises via the Q library
 (<any>mongoose).Promise = Q.Promise;
 
@@ -93,6 +65,32 @@ const db = mongoose.connection;
 db.on('error', log.error.bind(log, 'DB connection error:'));
 db.once('open', () => {
 	log.info('MongoDB connected');
+});
+
+// Handle errors
+app.use((error: any, req, res, next) => {
+	log.warn(error);
+
+	// Handle 404 as an error
+	if (error.status === 404) {
+		res.status(404).send({
+			message: '404.  Not found.'
+		});
+	}
+	else {
+		// Handle everything else
+		let showError = {
+			message: error.message,
+			error: {}
+		};
+
+		if (env === 'dev') {
+			// Only include stacktrace when in dev
+			showError.error = error;
+		}
+
+		res.status(error.statusCode || 500).json(error);
+	}
 });
 
 export default app;
