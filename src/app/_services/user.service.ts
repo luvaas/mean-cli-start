@@ -3,7 +3,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { AuthService } from '../_services/auth.service';
-import { IUser } from '../../../server/models/user';
+import { User } from '../_models/user';
 
 @Injectable()
 export class UserService {
@@ -17,11 +17,11 @@ export class UserService {
 		return this.http.get('/api/users/' + id, this.jwt()).map((response: Response) => response.json());
 	}
 
-	create(user: IUser) {
+	create(user: User) {
 		return this.http.post('/api/users', user, this.jwt()).map((response: Response) => response.json());
 	}
 
-	update(user: IUser) {
+	update(user: User) {
 		return this.http.put('/api/users/' + user._id, user, this.jwt()).map((response: Response) => response.json());
 	}
 

@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
 import { Router } from '@angular/router';
 import { UserService } from '../../_services/user.service';
-import { IUser } from '../../../../server/models/user';
-
+import { User } from '../../_models/user';
 
 @Component({
 	selector: 'app-users',
@@ -14,8 +13,8 @@ export class ManageUsersComponent implements OnInit {
 	// Instantiate users to an empty array
 	error : string;
 	jwt : string;
-	currentUser : IUser;
-	users : IUser[] = [];
+	currentUser : User;
+	users : User[] = [];
 
 	constructor(private userService: UserService) {
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -25,7 +24,7 @@ export class ManageUsersComponent implements OnInit {
 
 	}
 
-	addUser(user: IUser) {
+	addUser(user: User) {
 		this.userService.create(user).subscribe(
 			newUser => this.users.push(newUser)
 		);
