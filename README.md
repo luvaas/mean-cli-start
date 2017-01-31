@@ -37,13 +37,12 @@ Huge thanks to the following projects and tutorials, upon which this app was bui
 * [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 #### Install Global Dependencies:
-```
-bash
+```bash
 npm install -g typescript
 npm install -g angular-cli
 ```
 
-#### Create a new project based on the MEAN Start
+#### Create a new project based on the MEAN-CLI Start
 
 Clone this repo into new project folder (e.g., `my-proj`):
 ```bash
@@ -77,19 +76,20 @@ git push -u origin master
 #### Install npm packages
 
 Install the npm packages described in the `package.json`:
-```
-bash
+```bash
 npm install
 ```
 
 ## Development server
-Start the dev server:
-```
-bash
+
+Your app depends on a Mongo database, so before you can run your app you need to have mongo running first.  Consult the [mongo documentation](https://docs.mongodb.com/manual/) if you're not sure how to do this.
+
+Once your mongo server is running, start the dev server by:
+```bash
 npm run dev
 ```
 
-Navigate to [http://localhost:4200/](http://localhost:4200/) for the app.
+Navigate to [http://localhost:4200/](http://localhost:4200/) to view the app.
 Shut it down manually with `Ctrl-C` to kill both the angular-cli server and the express server.
 
 The `npm run dev` script starts 2 servers concurrently:
@@ -105,29 +105,51 @@ so that the whole app is available at [http://localhost:4200/](http://localhost:
 
 ## Production server
 Kick off a production build and start the server:
-```
-bash
+```bash
 npm run prod
 ```
 
 The `npm run prod` script builds the Angular app using `ng build --prod`, sets `NODE_ENV=production`, and then starts the Express server.  Because the entire Angular app has already been built and we don't need to monitor any files for changes, all we need is to serve the angular packages and provide middlewear for the `/api` routes.  The Express server does this by making everything available on the `:3000` port.
 
+## Creating the First User
+Try visiting `http://localhost:4200/admin` in your browser.  Because `admin` is a secured route you will be redirected to the login page.  Since you do not yet have an account, you'll have to create one.  Click the *Register* link to go to the registration page, enter your email address and username, and click the *Create an Account* button.
+
+You should now see an access denied message.  What's going on?
+
+Everything is working exactly as expected!  Yes, you do now have an user account but since all of the admin routes are protected, you can't get in.  In fact, if you were to try hitting the `http://localhost:4200/api/users` route directly in order to see user data, you would get a *401* error (Unauthorized) there too.
+
+In order to access any page in the admin section you have to give yourself admin rights.  To do so, open a terminal and run the mongo CLI:
+```bash
+mongo api-server
+```
+
+Use the mongo CLI to give your new account admin access by entering the following at the prompt (be sure to enter the email address you used to create your account):
+```bash
+db.users.update({email: "yourname@mailinator.com"}, { $set: {admin: true}});
+```
+
+In order to use your new admin privileges, you need to log in again so the API server can send you your new token.  Do this by visiting `http://localhost:4200/admin` one more time.  Enter your new account info at the login screen, hit *Login* button, and BOOM... this time you should see the admin dashboard.  Success.
+
 ## Config Files
 Rather than hard-coding strings in the Express server files, we make environment-specific values available via config files.  The Express server will load either `server/config/config.development.ts` or `server/config/config.production.ts` based on the environment set by the start script.  Config values common to all environments can be set in `server/config/config.production.ts` and then (optionally) overwritten by setting the same values in `server/config/config.[env].ts`.
 
 ## Role-Based Access Control
+__TLDR;__ Your password is encrypted in the database using bcrypt.  When you login successfully, the API server sends your browser a JWT (a token).  The JWT is used whenever you attempt to access secured routes or request certain data in order to verify your identity and ensure you have sufficient permissions.  Skip the rest of this section unless you're curious how it all works.
+
+------------
+
 The `admin` section includes its own routes (inside the `admin.module.ts` file) along with a folder called `_guards`.  This design pattern allows us to easily set guards on all of the routes within the admin section to prevent access from unauthorized users.  We use Angular routes with guards to intercept protected routes, redirect users to the login page when necessary, and then use `api/authenticate` to log the user in. 
 
 Bcrypt is used to compare the user's sent password with the bcrypted password hash stored in the database.  If all goes well, the user is logged in successfully.  When the user passes authentication, a JWT (token) is returned from `api/authenticate` and stored in the localstorage of the user's browser. The token contains the entire user object, minus their password, in the token's payload. Thereafter, whenever the user attempts to access a restricted page, two layers of authentication prevent unauthorized access:
 
-- First, Angular uses some auth-guards to determine whether the user has a JWT.  If so, it decodes the payload of the token on the client to verify that the user has sufficient permissions (i.e., they have the .admin property set on the user object) to access the route in question and, if so, passes them through.
-- Just passing a user through to a given secured route is relatively harmless, since that page doesn't have any sensitive data to display until it can fetch the data it needs from the API server.  Therefore, the second layer of protection happens when the client sends the JTW token back to the API server along with its request for data.  The API server looks at the token and verifies its digital signature using a secret.  Because the token already contains user info and we can verify that the token hasn't been tampered with, it doesn't need to do another DB call for the user and it can return the requested data right away.
+- First, Angular uses [auth-guards](https://angular.io/docs/ts/latest/guide/router.html#!#guards) to determine whether or not the user has a JWT.  If so, it decodes the payload of the token on the client to verify that the user has sufficient permissions (i.e., they have the .admin property set on the user object) to access the route in question and, if so, pass them through.
+- Just passing a user through to a given secured route is relatively harmless, since that page doesn't have any sensitive data to display until it can fetch the data it needs from the API server.  Therefore, the second layer of protection happens when the client sends the JTW token back to the API server along with its request for data.  The API server looks at the token, makes sure it hasn't expired, and verifies its digital signature using a secret.  Because the token already contains user info and we can verify that the token hasn't been tampered with, we can skip another DB call for the user and send the requested data right away.
 
 All of this work behind the scenes is handled for you. 
 
 The JWT stored on the client is set to expire after 24 hours by default (at which point the user will no longer be considered logged in).  You can change this value in `server/config/config.[env].ts`.  The user will remain logged in until either the token expires or they hit the `login` page (which clears the token).
 
-*NOTE:* It's important to note here that this app is not secured by SSL and cannot use HTTPS as is.  Doing so would require purchashing a certificate and installing it on your API server.  This is highly recommended, though it is beyond the scope of this project.  Without a secure connection with your server, your JWT will be subject to interception by [man-in-the-middle](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) attacks.
+__NOTE:__ It's important to know that this app is not secured by SSL and cannot use HTTPS as is.  Doing so would require purchasing a certificate and installing it on your API server.  This is highly recommended, though it is beyond the scope of this app.  Without a secure connection with your server, your JWT will be subject to interception by [man-in-the-middle](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) attacks.
 
 While this app is currently only protecting the server/routes/api/user routes by looking for the user.admin property, finer-grained control, including detailed access controls could be provided by implementing something like [express-jwt-permissions](https://github.com/MichielDeMey/express-jwt-permissions).
 
@@ -150,7 +172,7 @@ All the API modules must have a default export of type `express.Router`.
 All routes will be imported by `app.ts` and be added to the Express app automatically.
 The root of the Routers correspond to the sub directories starting from `api/`, so the path of above API is `/api/demo/test`.
 
->TODO: Role-based access control required.
+If you want to secure any given API route, you can follow the example provided by the user routes at `server/routes/api/user.ts`.
 
 ### Angular Code scaffolding
 
@@ -173,7 +195,6 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 Before running the tests make sure you are serving the app via `ng serve` (i.e., using `npm run dev`, as above).
-
 
 ## Deploying to AWS Elastic Beanstalk
 
