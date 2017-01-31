@@ -1,14 +1,17 @@
 import * as mongoose from 'mongoose';
 
 export interface IUser {
+	_id?		: string,
 	email		: string;
 	password	: string;
+	created		: Date;
 	admin		: boolean;
 };
 
 const userSchema = new mongoose.Schema({
 	email 		: String,
 	password 	: String,
+	created 	: { type : Date, default : Date.now() },
 	admin 		: { type : Boolean, default : false }
 });
 
