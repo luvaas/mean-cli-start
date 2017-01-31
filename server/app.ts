@@ -55,6 +55,18 @@ function resolve(root: string, modules): void {
 }
 resolve('', routeModules);
 
+// CORS middleware
+let allowCrossDomain = function(req, res, next) {
+	res.header('Access-Control-Allow-Origin', 'example.com');
+	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+	res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+	next();
+};
+// Uncomment this line if you expect to receive API requests from other domains
+// app.use(allowCrossDomain);
+
+
 // Default to main page. Angular route takes over from there.
 app.use((req, res) => {
 	res.sendFile(path.join(__dirname, '../public/index.html'));
