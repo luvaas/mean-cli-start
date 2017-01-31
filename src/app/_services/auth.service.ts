@@ -74,11 +74,11 @@ export class AuthService {
 	private getDecodedToken() {
 		// Decode and return the JWT
 		let jwt_decode = require('jwt-decode');
-
 		let token = this.getToken();
 
 		if (token) {
 			let decoded = jwt_decode(token);
+
 			return decoded;
 		}
 		else {

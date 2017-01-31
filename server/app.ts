@@ -24,6 +24,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Use express-jwt to identify registered users set in authentication header as a JWT while still providing access to unregistered users
+let jwt = require('express-jwt');
+app.use(jwt({
+	secret: config.secret,
+	credentialsRequired: false
+}));
+
 // Create Express routes using all files in the routes directory
 log.info('Create express routes...');
 const routeModules = require('require-all')({
@@ -50,7 +57,7 @@ resolve('', routeModules);
 
 // Default to main page. Angular route takes over from there.
 app.use((req, res) => {
-	res.sendFile(path.join(__dirname, 'public/index.html'));
+	res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Set up mongoose to use promises via the Q library
@@ -74,7 +81,8 @@ app.use((error: any, req, res, next) => {
 			message: '404.  Not found.'
 		});
 	}
-	else if (error.name === 'UnauthorizedError') {
+	// Handle unauthorized access
+	else if (error.name === 'UnauthorizedError' || error.status === 401) {
 		res.status(401).json({
 			message: '401.  Not authorized.'
 		});

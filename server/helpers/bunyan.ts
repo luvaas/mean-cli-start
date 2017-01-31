@@ -21,7 +21,7 @@ if (env === 'prod') {
 	logStreams.push(
 		{
 			level: 'warn',
-			path: path.join(__dirname, 'logs', 'api-server-error.log') // log WARN and above to a file
+			path: 'logs/api-server-error.log' // log WARN and above to a file
 		}
 	);
 }

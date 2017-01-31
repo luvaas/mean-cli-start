@@ -127,7 +127,9 @@ All of this work behind the scenes is handled for you.
 
 The JWT stored on the client is set to expire after 24 hours by default (at which point the user will no longer be considered logged in).  You can change this value in `server/config/config.[env].ts`.  The user will remain logged in until either the token expires or they hit the `login` page (which clears the token).
 
-*NOTE:* It's important to note here that this app is not secured by SSL and cannot use HTTPS as is.  Doing so would require purchashing a certificate and installing it on your API server.  This is highly recommended but is beyond the scope of this project.  Without a secure connection with your server, your JWT will be subject to interception by [man-in-the-middle](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) attacks.
+*NOTE:* It's important to note here that this app is not secured by SSL and cannot use HTTPS as is.  Doing so would require purchashing a certificate and installing it on your API server.  This is highly recommended, though it is beyond the scope of this project.  Without a secure connection with your server, your JWT will be subject to interception by [man-in-the-middle](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) attacks.
+
+While this app is currently only protecting the server/routes/api/user routes by looking for the user.admin property, finer-grained control, including detailed access controls could be provided by implementing something like [express-jwt-permissions](https://github.com/MichielDeMey/express-jwt-permissions).
 
 ### Custom API
 

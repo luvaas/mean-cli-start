@@ -13,7 +13,9 @@ log.info(`Creating CRUD routes for ${modelName}`);
 // Create routes for plural object fetching
 crudRouter.route('/' + modelName + 's')
 	// C(reate)
-	.post((req, res) => {
+	.post((req: any, res: any, next: any) => {
+		if (!req.user || !req.user.admin) { return next({status: 401}); } // Throw error if user doesn't have sufficient permission
+
 		let m = new model();
 		Object.assign(m, req.body);
 		m.save((err) => {
@@ -26,9 +28,10 @@ crudRouter.route('/' + modelName + 's')
 		});
 	})
 	// R(ead) all documents from model
-	.get((req, res) => {
-		// Remove the password field before sending to the client
-		let fields = '-password';
+	.get((req: any, res: any, next: any) => {
+		if (!req.user || !req.user.admin) { return next({status: 401}); } // Throw error if user doesn't have sufficient permission
+
+		let fields = '-password'; // Don't return passwords
 		model.find({}, fields, (err, ms) => {
 			if (err) {
 				res.json({ error: err });
@@ -42,9 +45,10 @@ crudRouter.route('/' + modelName + 's')
 // Create routes for singular model fetching (i.e., for a specific object with a given ID)
 crudRouter.route('/' + modelName + 's/:_id')
 	// R(ead) a single document from model by matching ID
-	.get((req, res) => {
-		// Remove the password field before sending to the client
-		let fields = '-password';
+	.get((req: any, res: any, next: any) => {
+		if (!req.user || !req.user.admin) { return next({status: 401}); } // Throw error if user doesn't have sufficient permission
+
+		let fields = '-password'; // Don't return passwords
 		model.findById(req.params._id, fields, (err, m) => {
 			if (err) {
 				res.json({ error: err });
@@ -55,7 +59,9 @@ crudRouter.route('/' + modelName + 's/:_id')
 		});
 	})
 	// U(pdate) a single document by id using req.body
-	.put((req, res) => {
+	.put((req: any, res: any, next: any) => {
+		if (!req.user || !req.user.admin) { return next({status: 401}); } // Throw error if user doesn't have sufficient permission
+
 		model.findById(req.params._id, (err, m) => {
 			if (err) {
 				res.json({ error: err });
@@ -73,7 +79,9 @@ crudRouter.route('/' + modelName + 's/:_id')
 		});
 	})
 	// D(elete) a single document by id
-	.delete((req, res) => {
+	.delete((req: any, res: any, next: any) => {
+		if (!req.user || !req.user.admin) { return next({status: 401}); } // Throw error if user doesn't have sufficient permission
+
 		model.remove({
 			_id: req.params._id
 		}, (err) => {

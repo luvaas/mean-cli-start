@@ -31,7 +31,6 @@ authRouter.route('/authenticate').post((req, res) => {
 
 							// Use our secret to create a JWT token
 							Jwt.sign(user, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
-								console.log('got token:', token);
 								if (err || !token) {
 									throw 'Could not get token';
 								}
@@ -60,9 +59,6 @@ authRouter.route('/authenticate').post((req, res) => {
 });
 
 authRouter.route('/register').post((req, res) => {
-
-	log.info('Hit register route. req.body:', req.body);
-
 	let Model = require('../../models/user').default;
 
 	let results: any = {
@@ -97,7 +93,7 @@ authRouter.route('/register').post((req, res) => {
 									delete savedUser.password; // Remove the password property before it is added to the JWT payload or sent to the client
 
 									// Use our secret to create a JWT token
-									Jwt.sign(user, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
+									Jwt.sign(savedUser, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
 										if (err || !token) {
 											throw 'Could not get token';
 										}
