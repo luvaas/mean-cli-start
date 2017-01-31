@@ -2,18 +2,18 @@
   users works!
 </p>
 
-<table>
+<table class="table">
 	<thead>
 		<tr>
 			<th>Email</th>
-			<th>Password</th>
+			<th>Creation Date</th>
 			<th>isAdmin</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr *ngFor="let user of users">
 			<td>{{user.email}}</td>
-			<td>{{user.password}}</td>
+			<td>{{user.created | date}}</td>
 			<td>{{user.admin}}</td>
 		</tr>
 	</tbody>
