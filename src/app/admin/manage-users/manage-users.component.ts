@@ -16,31 +16,26 @@ export class ManageUsersComponent implements OnInit {
 	currentUser : User;
 	users : User[] = [];
 
-	constructor(private userService: UserService) {
+	constructor(private service: UserService, private router: Router) {
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 	}
 
-	onSubmit() {
-
+	onUserEditClick(user: User) {
+		this.router.navigate(['/admin/user', user._id]); // Mongo uses the ID convention of "._id" instead of ".id"
 	}
 
-	addUser(user: User) {
-		this.userService.create(user).subscribe(
-			newUser => this.users.push(newUser)
-		);
-	}
-
-	deleteUser(id: number) {
-		this.userService.delete(id).subscribe(() => { this.getAllUsers(); });
-	}
+	// TODO:
+	// addUser(user: User) {
+	// 	this.service.create(user).subscribe(results => this.users.push(results.data));
+	// }
 
 	private getAllUsers() {
-		this.userService.getAll().subscribe(users => { this.users = users; });
+		this.service.getAll()
+			.subscribe(results => this.users = results.data);
 	}
 
 	ngOnInit() {
 		this.getAllUsers();
-
 	}
 }
 

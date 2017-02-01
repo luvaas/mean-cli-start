@@ -1,3 +1,32 @@
-<p>
-  user works!
-</p>
+<div class="col-md-6 col-md-offset-3">
+	<h2>Edit User Info</h2>
+
+
+	<form name="form" (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate *ngIf="model">
+		<p>
+			User created on: {{model.created | date}}<br>
+		</p>
+		<div class="form-group" [ngClass]="{ 'has-error': f.submitted && !email.valid }">
+			<label for="email">Email</label>
+			<input type="text" class="form-control" name="email" [(ngModel)]="model.email" #email="ngModel" required />
+			<div *ngIf="f.submitted && !email.valid" class="help-block">Email is required</div>
+		</div>
+		<div class="form-group" [ngClass]="{ 'has-error': f.submitted && !first.valid }">
+			<label for="first">First Name</label>
+			<input type="first" class="form-control" name="first" [(ngModel)]="model.first" #first="ngModel" required />
+			<div *ngIf="f.submitted && !first.valid" class="help-block">First name is required</div>
+		</div>
+		<div class="form-group" [ngClass]="{ 'has-error': f.submitted && !last.valid }">
+			<label for="last">Last Name</label>
+			<input type="last" class="form-control" name="last" [(ngModel)]="model.last" #last="ngModel" required />
+			<div *ngIf="f.submitted && !last.valid" class="help-block">Last name is required</div>
+		</div>
+		<div class="form-group">
+			<button type="submit" [disabled]="loading" class="btn btn-primary">
+				Update User
+				<img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+			</button>
+			<button class="btn" type="button" (click)="onCancelClick(model)">Cancel</button>
+		</div>
+	</form>
+</div>

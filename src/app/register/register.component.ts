@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
 import { MessageService } from '../_services/message.service';
+import { User } from '../_models/user';
 
 @Component({
 	selector: 'app-register',
@@ -9,13 +10,13 @@ import { MessageService } from '../_services/message.service';
 	styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
-	model : any = {};
+	model : User = undefined;
 	loading = false;
 	returnUrl : string;
 
 	constructor( private route: ActivatedRoute, private router: Router, private authService: AuthService, private messageService: MessageService ) { }
 
-	register() {
+	submit() {
 		this.loading = true;
 		this.authService.register(this.model.email, this.model.password)
 			.subscribe(
@@ -38,7 +39,17 @@ export class RegisterComponent implements OnInit {
 			);
 	}
 
+	logout(next) {
+		this.authService.logout();
+		if (next) { next(); }
+	}
+
 	ngOnInit() {
-		this.returnUrl = this.route.snapshot.queryParams.hasOwnProperty('returnUrl') ? this.route.snapshot.queryParams['returnUrl'] : this.authService.returnUrl ? this.authService.returnUrl : '/admin';
+		let self = this;
+
+		this.logout(function() {
+			// Get return url from route parameters or authService or default to '/'
+			self.returnUrl = self.route.snapshot.queryParams.hasOwnProperty('returnUrl') ? self.route.snapshot.queryParams['returnUrl'] : self.authService.returnUrl ? self.authService.returnUrl : '/admin';
+		});
 	}
 }

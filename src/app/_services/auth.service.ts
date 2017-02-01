@@ -17,7 +17,7 @@ export class AuthService {
 		return this.http.post('/api/authenticate', { email: email, password: password })
 			.map((response: Response) => {
 				let results = response.json();
-				let token = results.token;
+				let token = results.data;
 
 				if (results.success && token) {
 					this.setToken(token);
@@ -36,7 +36,7 @@ export class AuthService {
 		return this.http.post('/api/register', { email: email, password: password })
 			.map((response: Response) => {
 				let results = response.json();
-				let token = results.token;
+				let token = results.data;
 
 				if (results.success && token) {
 					this.setToken(token);

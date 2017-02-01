@@ -6,15 +6,23 @@
 	<thead>
 		<tr>
 			<th>Email</th>
+			<th>First Name</th>
+			<th>Last Name</th>
 			<th>Creation Date</th>
-			<th>isAdmin</th>
+			<th>Admin</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr *ngFor="let user of users">
 			<td>{{user.email}}</td>
+			<td>{{user.first}}</td>
+			<td>{{user.last}}</td>
 			<td>{{user.created | date}}</td>
 			<td>{{user.admin}}</td>
+			<td>
+				<button class="btn" (click)="onUserEditClick(user)">Edit</button>
+			</td>
 		</tr>
 	</tbody>
 </table>

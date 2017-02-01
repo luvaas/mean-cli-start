@@ -3,6 +3,7 @@ import log from '../../helpers/bunyan';
 import config from '../../helpers/config';
 import * as Jwt from 'jsonwebtoken';
 import * as Bcrypt from 'bcrypt';
+import { Results } from '../../models/results';
 
 const authRouter = Router();
 
@@ -10,11 +11,7 @@ authRouter.route('/authenticate').post((req, res) => {
 
 	let Model = require('../../models/user').default;
 
-	let results: any = {
-		info 	: '',
-		user 	: {},
-		success : false
-	};
+	let results: Results = {};
 
 	Model.findOne({email: req.body.email}).exec()
 		.then((user) => {
@@ -36,8 +33,8 @@ authRouter.route('/authenticate').post((req, res) => {
 								}
 								else {
 									// Success!
-									results.token = token;
-									results.info = 'Successfully found user.';
+									results.data = token;
+									results.info = 'Found user successfully.';
 									results.success = true;
 
 									return res.json(results);
@@ -99,7 +96,7 @@ authRouter.route('/register').post((req, res) => {
 										}
 										else {
 											// Success!
-											results.token = token;
+											results.data = token;
 											results.info = 'User created successfully';
 											results.success = true;
 

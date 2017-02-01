@@ -13,7 +13,7 @@ export class UserService {
 		return this.http.get('/api/users', this.jwt()).map((response: Response) => response.json());
 	}
 
-	getById(id: number) {
+	getById(id: string) {
 		return this.http.get('/api/users/' + id, this.jwt()).map((response: Response) => response.json());
 	}
 
@@ -25,7 +25,7 @@ export class UserService {
 		return this.http.put('/api/users/' + user._id, user, this.jwt()).map((response: Response) => response.json());
 	}
 
-	delete(id: number) {
+	delete(id: string) {
 		return this.http.delete('/api/users/' + id, this.jwt()).map((response: Response) => response.json());
 	}
 

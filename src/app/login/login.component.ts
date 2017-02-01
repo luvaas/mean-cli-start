@@ -4,21 +4,21 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
 import { MessageService } from '../_services/message.service';
+import { User } from '../_models/user';
 
 @Component({
-	//moduleId: module.id,
 	selector: 'app-login',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-	model : any = {};
+	model : User = undefined;
 	loading = false;
 	returnUrl : string;
 
 	constructor( private route: ActivatedRoute, private router: Router, private authService: AuthService, private messageService: MessageService ) { }
 
-	login() {
+	submit() {
 		this.loading = true;
 		return this.authService.login(this.model.email, this.model.password)
 			.subscribe(
