@@ -22,8 +22,6 @@ export class UserComponent implements OnInit {
 		this.service.update(this.model)
 			.subscribe(
 				results => {
-					console.log('Got results back.  updatedUser = ', results.data);
-
 					this.loading = false;
 					this.model = results.data;
 					return this.messageService.success(results.info);
@@ -39,7 +37,7 @@ export class UserComponent implements OnInit {
 		this.router.navigate(['/admin/users', { id: user._id }]); // Note that we're passing the current user's ID back to the users page so that we can (optionally) do something with it, like show it as selected on the user management page.
 	}
 
-	// TODO:
+	// TODO: Add confirmation before deleting
 	// deleteUser(id: string) {
 	// 	this.service.delete(id).subscribe(() => { this.getAllUsers(); });
 	// }
@@ -48,7 +46,6 @@ export class UserComponent implements OnInit {
 		this.route.params
 			.switchMap((params: Params) => this.service.getById(params['id']))
 			.subscribe((results) => {
-				console.log('results:', results);
 				this.model = results.data;
 			});
 	}
