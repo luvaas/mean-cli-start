@@ -230,8 +230,6 @@ To view your application in the web browser run:
 gcloud app browse
 ```
 
-## Deploying to Heroku
-
 ## Thanks To
 
 Special thanks to [MEAN-start](https://github.com/cj-wang/mean-start) for the scaffold project.
