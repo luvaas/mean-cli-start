@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+/* Styles placed here will override those from any component */
+
+@import "assets/styles/scss/variables"; // Common scss variables for the entire app
 
 /* Sticky footer styles */
 html {
