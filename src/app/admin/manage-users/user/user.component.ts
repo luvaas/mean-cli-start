@@ -3,7 +3,6 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import { UserService } from '../../../_services/user.service';
 import { MessageService } from '../../../_services/message.service';
-import { User } from '../../../_models/user';
 
 @Component({
 	selector: 'app-user',
@@ -11,7 +10,7 @@ import { User } from '../../../_models/user';
 	styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-	model: User = undefined;
+	model: any = {};
 	loading: boolean = false;
 
 	constructor(private route: ActivatedRoute, private router: Router, private service: UserService, private messageService: MessageService) {}
@@ -33,7 +32,7 @@ export class UserComponent implements OnInit {
 			);
 	}
 
-	onCancelClick(user: User) {
+	onCancelClick(user: any) {
 		this.router.navigate(['/admin/users', { id: user._id }]); // Note that we're passing the current user's ID back to the users page so that we can (optionally) do something with it, like show it as selected on the user management page.
 	}
 

@@ -4,7 +4,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
 import { MessageService } from '../_services/message.service';
-import { User } from '../_models/user';
 
 @Component({
 	selector: 'app-login',
@@ -12,7 +11,7 @@ import { User } from '../_models/user';
 	styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-	model : User = undefined;
+	model : any = {};
 	loading = false;
 	returnUrl : string;
 
