@@ -7,6 +7,7 @@ import * as Q from 'q';
 import log from './helpers/bunyan';
 import config from './helpers/config';
 
+const jwt = require('express-jwt');
 const app: express.Express = express();
 
 // Get environment
@@ -24,8 +25,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Use express-jwt to identify registered users set in authentication header as a JWT while still providing access to unregistered users
-let jwt = require('express-jwt');
+// This sets the req.user property to the payload found in the decoded and verified JWT token from the request header.
+// If the token is missing, nothing happens.  If the token exists but is invalid, it throws a 401 error, which is handled below.
 app.use(jwt({
 	secret: config.secret,
 	credentialsRequired: false
@@ -91,7 +92,6 @@ let allowCrossDomain = function(req, res, next) {
 };
 // Uncomment this line if you expect to receive API requests from other domains
 // app.use(allowCrossDomain);
-
 
 // Default to main page. Angular route takes over from there.
 app.use((req, res) => {
