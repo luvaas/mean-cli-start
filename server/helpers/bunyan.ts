@@ -17,7 +17,7 @@ let logStreams: any = [
 	}
 ];
 if (env === 'prod') {
-	// When on production, log errors to a file
+	// When on production, add an additional stream to log WARN level and above to a file (in default JSON format)
 	logStreams.push(
 		{
 			level: 'warn',
@@ -26,8 +26,9 @@ if (env === 'prod') {
 	);
 }
 let log = bunyan.createLogger({
-	name: 'api-server',
-	streams: logStreams
+	name: 'logger',
+	streams: logStreams,
+	serializers: bunyanDebugStream.serializers
 });
 
 export default log;
