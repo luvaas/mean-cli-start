@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import log from '../../helpers/bunyan';
 import config from '../../helpers/config';
-import * as Jwt from 'jsonwebtoken';
 import * as Bcrypt from 'bcrypt';
 import { Results } from '../../models/results';
 
 const authRouter = Router();
+const jwt = require('jsonwebtoken');
 
 authRouter.route('/authenticate').post((req, res) => {
 
@@ -27,7 +27,7 @@ authRouter.route('/authenticate').post((req, res) => {
 							delete user.password; // Remove the password property before it is added to the JWT payload or sent to the client
 
 							// Use our secret to create a JWT token
-							Jwt.sign(user, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
+							jwt.sign(user, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
 								if (err || !token) {
 									throw 'Could not get token';
 								}
@@ -90,7 +90,7 @@ authRouter.route('/register').post((req, res) => {
 									delete savedUser.password; // Remove the password property before it is added to the JWT payload or sent to the client
 
 									// Use our secret to create a JWT token
-									Jwt.sign(savedUser, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
+									jwt.sign(savedUser, config.secret, {expiresIn: config.tokenExpiresIn}, function(err, token) {
 										if (err || !token) {
 											throw 'Could not get token';
 										}

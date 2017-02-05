@@ -1,14 +1,20 @@
-// The authentication service is used to login and logout of the application.  To login it posts the users credentials to the api and checks the response for a JWT token, if there is one it means authentication was successful so the user details including the token are added to local storage.
-// The logged in user details are stored in local storage so the user will stay logged in if they refresh the browser and also between browser sessions until they logout. If you don't want the user to stay logged in between refreshes or sessions the behaviour could easily be changed by storing user details somewhere less persistent such as session storage or in a property of the authentication service.
+// The authentication service is used to login and logout of the application.
+// To login it posts the users credentials to the api and checks the response for a JWT token.
+// If there is one it means authentication was successful so the  user details including the token are added to local storage.
+// The logged in user details are stored in local storage so the user will stay logged in if they
+// refresh the browser and also between browser sessions until they logout. If you don't want the user
+// to stay logged in between refreshes or sessions the behavior could easily be changed by storing user
+// details somewhere less persistent such as session storage or in a property of the authentication service.
 
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import { JwtHelper, tokenNotExpired } from 'angular2-jwt';
 
 @Injectable()
 export class AuthService {
-
+	jwtHelper : JwtHelper = new JwtHelper();
 	returnUrl : string; // Store the URL so we can redirect after logging in
 
 	constructor(private http: Http) { }
@@ -48,15 +54,12 @@ export class AuthService {
 
 	setToken(token: any) {
 		// Store jwt token in local storage to keep user logged in between page refreshes
-		localStorage.setItem('token', JSON.stringify(token));
+		localStorage.setItem('token', token);
 	}
 
 	isLoggedIn() {
-		let token = this.getToken();
-		let isTokenValid = this.getTokenValid(token);
-
-		// TODO: decode JWT and make sure it's not expired
-		return isTokenValid ? true : false; // If there is token in local storage, they are logged in.
+		// Check if token exists and if it is not expired
+		return tokenNotExpired('token');
 	}
 
 	getCurrentUser() {
@@ -68,32 +71,21 @@ export class AuthService {
 
 	getToken() {
 		// Get the jwt token from local storage
-		return JSON.parse(localStorage.getItem('token')) || undefined;
+		let token = localStorage.getItem('token') || undefined;
+		return token;
 	}
 
 	private getDecodedToken() {
 		// Decode and return the JWT
-		let jwt_decode = require('jwt-decode');
 		let token = this.getToken();
 
 		if (token) {
-			let decoded = jwt_decode(token);
-
+			let decoded = this.jwtHelper.decodeToken(token);
 			return decoded;
 		}
 		else {
 			return undefined;
 		};
 	}
-
-	private getTokenValid(token) {
-		// Check the expiration date of the token to make sure it's still validif(decodedToken.exp < dateNow.getTime())
-		if (!token) { return false; };
-
-		let now = new Date();
-		let decodedToken = this.getDecodedToken();
-		let isValid = (decodedToken.exp < now.getTime()) ? true : false;
-
-		return isValid;
-	}
 }
+

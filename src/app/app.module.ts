@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { MenuService } from './home/menu.service';
@@ -16,6 +15,8 @@ import { MessageService } from './_services/message.service';
 import { RegisterComponent } from './register/register.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { RoutesModule } from './app-routes.module';
+import { AuthModule } from './_services/auth.module';
+
 
 @NgModule({
 	declarations: [
@@ -32,6 +33,7 @@ import { RoutesModule } from './app-routes.module';
 		FormsModule,
 		HttpModule,
 		AdminModule,
+		AuthModule,
 		NgbModule.forRoot(),
 		RoutesModule
 	],

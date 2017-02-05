@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
 import { Router } from '@angular/router';
 import { UserService } from '../../_services/user.service';
+import { MessageService } from '../../_services/message.service';
 
 @Component({
 	selector: 'app-users',
@@ -15,7 +16,7 @@ export class ManageUsersComponent implements OnInit {
 	currentUser : any;
 	users : any[] = [];
 
-	constructor(private service: UserService, private router: Router) {
+	constructor(private service: UserService, private router: Router, private messageService: MessageService) {
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 	}
 
@@ -23,22 +24,31 @@ export class ManageUsersComponent implements OnInit {
 		this.router.navigate(['/admin/user', user._id]); // Mongo uses the ID convention of "._id" instead of ".id"
 	}
 
-	// TODO:
-	// addUser(user: any) {
-	// 	let self = this;
-	// 	this.service.create(user, function(err, user) {
-	// 		if (err) {
-	// 			self.messageService.error(err);
-	// 		}
-	// 		else {
-	// 			self.users.push(user);
-	// 		}
-	// 	});
-	// }
+	// TODO: Not implemented in UI
+	addUser(user: any) {
+		let self = this;
+		this.service.create(user)
+			.subscribe(
+				results => {
+					this.users.push(results.data);
+					this.messageService.success(results.info);
+				},
+				err => {
+					this.messageService.error(err);
+				}
+			);
+	}
 
 	private getAllUsers() {
 		this.service.getAll()
-			.subscribe(results => this.users = results.data);
+			.subscribe(
+				results => {
+					this.users = results.data;
+				},
+				err => {
+					this.messageService.error(err);
+				}
+			);
 	}
 
 	ngOnInit() {

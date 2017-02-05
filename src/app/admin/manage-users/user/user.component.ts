@@ -23,30 +23,45 @@ export class UserComponent implements OnInit {
 				results => {
 					this.loading = false;
 					this.model = results.data;
-					return this.messageService.success(results.info);
+					this.messageService.success(results.info);
 				},
 				error => {
 					this.loading = false;
-					return this.messageService.error(error);
+					this.messageService.error(error);
 				}
 			);
 	}
 
 	onCancelClick(user: any) {
-		this.router.navigate(['/admin/users', { id: user._id }]); // Note that we're passing the current user's ID back to the users page so that we can (optionally) do something with it, like show it as selected on the user management page.
+		 // Note that we're passing the current user's ID back to the users page so that we can (optionally)
+		 // do something with it, like show it as selected on the user management page.
+		this.router.navigate(['/admin/users', { id: user._id }]);
 	}
 
-	// TODO: Add confirmation before deleting
-	// deleteUser(id: string) {
-	// 	this.service.delete(id).subscribe(() => { this.getAllUsers(); });
-	// }
+	// TODO: Add confirmation before deleting.  Not implemented in UI.
+	deleteUser(id: string) {
+		this.service.delete(id).subscribe(
+			results => {
+				// Success
+				this.router.navigate(['/admin/users']);
+				this.messageService.success(results.info);
+			},
+			error => {
+				// Handle error
+				this.messageService.error(error);
+			}
+		);
+	}
 
 	ngOnInit() {
 		this.route.params
 			.switchMap((params: Params) => this.service.getById(params['id']))
-			.subscribe((results) => {
-				this.model = results.data;
-			});
+			.subscribe(
+				results => this.model = results.data,
+				error => {
+					// Handle error
+					this.messageService.error(error);
+				}
+			);
 	}
-
 }

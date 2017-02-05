@@ -22,19 +22,20 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 		// Verify whether or not the user has sufficient access for the route
 
 		let isLoggedIn = this.authService.isLoggedIn();
-		let currentUser = this.authService.getCurrentUser();
 
 		if (isLoggedIn){
 			// The user is logged in
-			if (currentUser.admin) {
-				// The user is logged in and they have admin rights
+			let currentUser = this.authService.getCurrentUser();
+
+			if (currentUser && currentUser.admin) {
+				// We found an user in the token payload and they have admin rights
 				return true;
 			}
 			else {
-				// The user is logged in but they do not have sufficient permission to access the page.
-
-				// Navigate to the forbidden page with extras
+				// The user either does not exist or they do not have sufficient permission to access the page.
+				// Navigate to the forbidden page
 				this.router.navigate(['/forbidden']);
+				return false;
 			}
 		}
 		else {
