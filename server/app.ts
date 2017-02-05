@@ -31,6 +31,32 @@ app.use(jwt({
 	credentialsRequired: false
 }));
 
+// Set up request logging for dev
+if (env === 'dev') {
+	app.use(function(req, res, next) {
+		// bunyan-debug-stream does magic things when passing an object with a req property into it, so we don't have to do any special kind of formatting for the output
+		let status: number = res.statusCode;
+
+		if (status < 300) {
+			log.info({ req : req, res : res });
+		}
+		else if (status >= 300 && status < 400) {
+			log.warn({ req : req, res : res });
+		}
+		else if (status >= 400 && status < 500) {
+			log.warn({ req : req, res : res });
+		}
+		else if (status >= 500) {
+			log.error({ req : req, res : res });
+		}
+		else {
+			log.info({ req : req, res : res });
+		}
+
+		next();
+	});
+}
+
 // Create Express routes using all files in the routes directory
 log.info('Create express routes...');
 const routeModules = require('require-all')({
@@ -85,22 +111,25 @@ db.once('open', () => {
 
 // Handle errors
 app.use((error: any, req, res, next) => {
-	log.error(error);
 
 	// Handle 404 as an error
 	if (error.status === 404) {
 		res.status(404).json({
-			message: '404.  Not found.'
+			status: 404,
+			message: 'Not found.'
 		});
 	}
 	// Handle unauthorized access
 	else if (error.name === 'UnauthorizedError' || error.status === 401) {
 		res.status(401).json({
-			message: '401.  Not authorized.'
+			status: 401,
+			message: 'Not authorized.'
 		});
 	}
 	else {
 		// Handle everything else
+		log.error(error);
+
 		let showError = {
 			message: error.message,
 			error: {}
