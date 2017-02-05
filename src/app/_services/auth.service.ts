@@ -38,8 +38,8 @@ export class AuthService {
 		localStorage.removeItem('token');
 	}
 
-	register(email: string, password: string) {
-		return this.http.post('/api/register', { email: email, password: password })
+	register(user: any) {
+		return this.http.post('/api/register', user)
 			.map((response: Response) => {
 				let results = response.json();
 				let token = results.data;

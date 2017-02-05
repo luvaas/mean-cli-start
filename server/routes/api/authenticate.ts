@@ -75,6 +75,8 @@ authRouter.route('/register').post((req, res) => {
 			else {
 				let newUser = new Model();
 				newUser.email = req.body.email;
+				newUser.first = req.body.first;
+				newUser.last = req.body.last;
 
 				return Bcrypt.hash(req.body.password, config.saltRounds)
 					.then((hash) => {
