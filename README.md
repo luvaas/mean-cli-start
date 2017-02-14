@@ -33,6 +33,7 @@ Huge thanks to the following projects and tutorials, upon which this app was bui
 #### Prerequisites
 
 * [Node.js and npm](https://docs.npmjs.com/getting-started/installing-node)
+* [Bcrypt](https://www.npmjs.com/package/bcrypt) (Be sure to read the full installation instructions and note bcrypt's dependencies)
 * [MongoDB](https://docs.mongodb.com/manual/installation/)
 * [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
