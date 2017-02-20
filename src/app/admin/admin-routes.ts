@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes }  from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 // Import page modules used in this route
 import { AdminComponent } from './admin.component';
@@ -9,7 +9,7 @@ import { ManageUsersComponent } from './manage-users/manage-users.component';
 import { AuthGuard } from './_guards/auth-guard.service';
 import { UserComponent } from './manage-users/user/user.component';
 
-const routes: Routes = [
+const adminRoutes: Routes = [
 	{
 		path: 'admin',
 		component: AdminComponent,
@@ -31,7 +31,7 @@ const routes: Routes = [
 @NgModule({
 	imports: [
 		CommonModule,
-		RouterModule.forRoot(routes)
+		RouterModule.forChild(adminRoutes)
 	],
 	exports: [
 		RouterModule

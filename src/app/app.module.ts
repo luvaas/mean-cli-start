@@ -14,7 +14,7 @@ import { MessageComponent } from './_directives/message/message.component';
 import { MessageService } from './_services/message.service';
 import { RegisterComponent } from './register/register.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
-import { RoutesModule } from './app-routes.module';
+import { RoutesModule } from './app-routes';
 import { AuthModule } from './_services/auth.module';
 
 
@@ -39,7 +39,7 @@ import { AuthModule } from './_services/auth.module';
 	],
 	providers: [
 		MenuService,
-		MessageService,
+		MessageService
 	],
 	bootstrap: [AppComponent]
 })

@@ -9,7 +9,7 @@ import { UserService } from '../_services/user.service';
 import { AuthService } from '../_services/auth.service';
 import { AuthGuard } from './_guards/auth-guard.service';
 import { UserComponent } from './manage-users/user/user.component';
-import { RoutesModule } from './admin-routes.module';
+import { RoutesModule } from './admin-routes';
 
 @NgModule({
 	imports: [
