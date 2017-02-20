@@ -3,6 +3,7 @@
     "node_modules/codelyzer"
   ],
   "rules": {
+    "callable-types": true,
     "class-name": true,
     "comment-format": [
       true,
@@ -11,6 +12,8 @@
     "curly": true,
     "eofline": true,
     "forin": true,
+    "import-blacklist": [true, "rxjs"],
+    "import-spacing": true,
     "indent": [
       true,
       "tabs"
@@ -56,6 +59,7 @@
       "check-else",
       "check-whitespace"
     ],
+    "prefer-const": true,
     "quotemark": [
       true,
       "single"
@@ -78,6 +82,8 @@
         "variable-declaration": "nospace"
       }
     ],
+    "typeof-compare": true,
+    "unified-signatures": true,
     "variable-name": false,
     "whitespace": [
       true,

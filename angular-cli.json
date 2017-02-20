@@ -16,7 +16,6 @@
 			"test": "test.ts",
 			"tsconfig": "tsconfig.json",
 			"prefix": "app",
-			"mobile": false,
 			"styles": [
 				"../node_modules/bootstrap/scss/bootstrap.scss",
 				"../node_modules/font-awesome/scss/font-awesome.scss",
@@ -34,13 +33,21 @@
 			}
 		}
 	],
-	"addons": [],
-	"packages": [],
 	"e2e": {
 		"protractor": {
 			"config": "./protractor.conf.js"
 		}
 	},
+	"lint": [
+		{
+			"files": "src/**/*.ts",
+			"project": "src/tsconfig.json"
+		},
+		{
+			"files": "e2e/**/*.ts",
+			"project": "e2e/tsconfig.json"
+		}
+	],
 	"test": {
 		"karma": {
 			"config": "./karma.conf.js"
