@@ -95,18 +95,7 @@ let allowCrossDomain = function(req, res, next) {
 
 // Default to main page. Angular route takes over from there.
 app.use((req, res) => {
-	res.sendFile(path.join(__dirname, '../public/index.html'));
-});
-
-// Set up mongoose to use promises via the Q library
-(<any>mongoose).Promise = Q.Promise;
-
-// Connect to MongoDB
-mongoose.connect(config.db);
-const db = mongoose.connection;
-db.on('error', log.error.bind(log, 'DB connection error:'));
-db.once('open', () => {
-	log.info('MongoDB connected');
+	res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 // Handle errors
@@ -145,4 +134,18 @@ app.use((error: any, req, res, next) => {
 });
 
 export default app;
+
+/***** Post-export setup *****/
+
+// Set up mongoose to use promises via the Q library
+(<any>mongoose).Promise = Q.Promise;
+
+// Connect to MongoDB
+mongoose.connect(config.db);
+const db = mongoose.connection;
+db.on('error', log.error.bind(log, 'DB connection error:'));
+db.once('open', () => {
+	log.info('MongoDB connected');
+});
+
 
