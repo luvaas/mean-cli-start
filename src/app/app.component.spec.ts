@@ -21,8 +21,7 @@ describe('AppComponent', () => {
 		expect(app).toBeTruthy();
 	}));
 
-	it(`should have as title 'app works!
-'`, async(() => {
+	it(`should have as title 'app works!'`, async(() => {
 		let fixture = TestBed.createComponent(AppComponent);
 		let app = fixture.debugElement.componentInstance;
 		expect(app.title).toContain('app works!');
